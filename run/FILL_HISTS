@@ -1,0 +1,2 @@
+source COMPILE
+./bin/AnalyzeHxx data/analysis/all.root test.root test.txt
