@@ -1,0 +1,9 @@
+.DS_Store
+*~
+*.pyc
+*.root
+*__init__*
+Delphes-3.0.10/
+include/ExRootAnalysis/
+include/classes/
+run/lib
