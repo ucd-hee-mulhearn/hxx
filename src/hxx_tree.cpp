@@ -33,10 +33,8 @@ void hxx_tree::WriteTree(TTree * tree){
    tree->Branch("mll",    &mll    );
 
    // met variables:
-   tree->Branch("met",          &met    );
-   tree->Branch("met_phi",      &met_phi);
-   tree->Branch("nopu_met",     &met);
-   tree->Branch("nopu_met_phi", &met_phi);
+   tree->Branch("nopu_met",     &nopu_met);
+   tree->Branch("nopu_met_phi", &nopu_met_phi);
    
    // jets:
    tree->Branch("jet_pt",     jet_pt);
@@ -68,8 +66,6 @@ void hxx_tree::ReadTree(TTree * tree){
    tree->SetBranchAddress("mll",    &mll      );
 
    // met variables:
-   tree->SetBranchAddress("met",     &met     );
-   tree->SetBranchAddress("met_phi", &met_phi );
    tree->SetBranchAddress("nopu_met",     &nopu_met     );
    tree->SetBranchAddress("nopu_met_phi", &nopu_met_phi );
 
@@ -110,8 +106,6 @@ void hxx_tree::Clear(){
    l2_eta   = 0;
    l2_phi   = 0;
    mll      = 0;
-   met      = 0;
-   met_phi  = 0;
    nopu_met = 0;
    nopu_met_phi = 0;
    jet_pt ->clear();

@@ -78,8 +78,19 @@ mkplots(){
 
    double basemin = 0.01;
 
-   TFile * f = new TFile("test.root");
+   TFile * f = new TFile("plots/latest.root");
    f->ls();
+
+   TCanvas * ctest = new TCanvas("ctest", "");
+   TLegend * legtest = new TLegend(0.7, 0.65, 0.90, 0.90);
+   ctest->SetLogy();
+   ctest->cd();
+   THStack * htest_bkg = GetBkgStack(f, "htestx", "test variable [GeV]", legtest);
+   TH1F    * htest_sig = GetSigHist(f, "htestx", "hxx1", MYRED1, legtest, "HXX (1 GeV)");
+   htest_bkg->SetMinimum(basemin);
+   htest_bkg->Draw();
+   htest_sig->Draw("LSAME");
+   legtest->Draw();
 
    TCanvas * c1 = new TCanvas("c1", "");
    TLegend * leg1 = new TLegend(0.7, 0.65, 0.90, 0.90);
@@ -87,12 +98,12 @@ mkplots(){
    c1->cd();
    THStack * hmll_bkg = GetBkgStack(f, "h0mll", "dilepton invariant mass [GeV]", leg1);
    TH1F    * hmll_sig = GetSigHist(f, "h0mll", "hxx1", MYRED1, leg1, "HXX (1 GeV)");
-
    hmll_bkg->SetMinimum(basemin);
    hmll_bkg->Draw();
    hmll_sig->Draw("LSAME");
    leg1->Draw();
-   c1->SaveAs("mll.png");
+   c1->SaveAs("plots/mll.png");
+
 
    TCanvas * c2 = new TCanvas("c2", "");
    TLegend * leg2 = new TLegend(0.7, 0.65, 0.90, 0.90);
@@ -104,7 +115,7 @@ mkplots(){
    hmjj_bkg->Draw();
    hmll_sig->Draw("LSAME");
    leg2->Draw();
-   c2->SaveAs("mjj.png");
+   c2->SaveAs("plots/mjj.png");
 
    TCanvas * c3 = new TCanvas("c3", "");
    TLegend * leg3 = new TLegend(0.7, 0.65, 0.90, 0.90);
@@ -116,7 +127,7 @@ mkplots(){
    hmjjll_bkg->Draw();
    hmjjll_sig->Draw("LSAME");   
    leg3->Draw();
-   c3->SaveAs("mjjll.png");
+   c3->SaveAs("plots/mjjll.png");
 
    TCanvas * c4 = new TCanvas("c4", "");
    TLegend * leg4 = new TLegend(0.7, 0.65, 0.90, 0.90);
@@ -128,7 +139,9 @@ mkplots(){
    hmet_bkg->Draw();
    hmet_sig->Draw("LSAME");
    leg4->Draw();
-   c4->SaveAs("met.png");
+   c4->SaveAs("plots/met.png");
+
+   continue;
 
    TCanvas * c5 = new TCanvas("c5", "");
    TLegend * leg5 = new TLegend(0.7, 0.65, 0.90, 0.90);
@@ -140,7 +153,7 @@ mkplots(){
    hnjet_bkg->Draw();
    hnjet_sig->Draw("LSAME");
    leg5->Draw();
-   c5->SaveAs("met.png");
+   c5->SaveAs("plots/met.png");
 
    TCanvas * c6 = new TCanvas("c6", "");
    TLegend * leg6 = new TLegend(0.7, 0.65, 0.90, 0.90);
@@ -152,7 +165,7 @@ mkplots(){
    hnbjet_bkg->Draw();
    hnbjet_sig->Draw("LSAME");
    leg6->Draw();
-   c6->SaveAs("met.png");
+   c6->SaveAs("plots/met.png");
 
    return;
 
@@ -226,12 +239,12 @@ mkplots(){
    hnjet_stage1_bkg->SetMinimum(1.0);
    hnjet_stage1_bkg->Draw("nostack");
    leg5->Draw();
-   c5->SaveAs("njet_stage1.png");
+   c5->SaveAs("plots/njet_stage1.png");
 
 */
 
 
-   //c3->SaveAs("jets.png");
+   //c3->SaveAs("plots/jets.png");
 
    /*
    TCanvas * c = new TCanvas("c", "");

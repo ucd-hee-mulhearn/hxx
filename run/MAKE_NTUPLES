@@ -1,36 +1,29 @@
 source COMPILE
 
-# met smearing off... to turn back on:  
-
 rm data/analysis/*.root
 
-# Using lumi in pb, xsec in pb^-1
+# Using lumi in fb, xsec in fb^-1
 
-# smear 20 for 8 TeV
-# smear 30 for 14 TeV
+./bin/MakeHxxTree --sample=1 --lumi=300 --xsec=385284   data/delphes/zjj_mll_gt_80.root data/analysis/zjj_mll_gt_80.root
+./bin/MakeHxxTree --sample=1 --lumi=300 --xsec=9477     data/delphes/zjj_mll_lt_80.root data/analysis/zjj_mll_lt_80.root
 
+./bin/MakeHxxTree --sample=2 --lumi=300 --xsec=777.6    data/delphes/zz_lljj.root data/analysis/zz_lljj.root
+./bin/MakeHxxTree --sample=2 --lumi=300 --xsec=214.6    data/delphes/zz_llbb.root data/analysis/zz_llbb.root
+./bin/MakeHxxTree --sample=2 --lumi=300 --xsec=1263     data/delphes/zw_lljj.root data/analysis/zw_lljj.root
+./bin/MakeHxxTree --sample=3 --lumi=300 --xsec=1388     data/delphes/wwjj.root data/analysis/wwjj.root
 
+./bin/MakeHxxTree --sample=4 --lumi=300 --xsec=25847    data/delphes/tt.root data/analysis/tt.root
 
-./bin/MakeHxxTree --sample=1 --lumi=300 --xsec=385284  --smear_met=30 --smear_num=1 data/delphes/zjj_mll_gt_80.root data/analysis/zjj_mll_gt_80.root
-./bin/MakeHxxTree --sample=1 --lumi=300 --xsec=9477    --smear_met=30 --smear_num=1 data/delphes/zjj_mll_lt_80.root data/analysis/zjj_mll_lt_80.root
+./bin/MakeHxxTree --sample=5 --lumi=300 --xsec=62.81    data/delphes/h_zz_lljj.root data/analysis/h_zz_lljj.root
+./bin/MakeHxxTree --sample=5 --lumi=300 --xsec=17.33    data/delphes/h_zz_llbb.root data/analysis/h_zz_llbb.root 
 
-./bin/MakeHxxTree --sample=2 --lumi=300 --xsec=9422    --smear_met=30 --smear_num=1 data/delphes/zz_lljj.root data/analysis/zz_lljj.root
-./bin/MakeHxxTree --sample=2 --lumi=300 --xsec=1000    --smear_met=30 --smear_num=1 data/delphes/zz_llbb.root data/analysis/zz_llbb.root
-./bin/MakeHxxTree --sample=2 --lumi=300 --xsec=4556    --smear_met=30 --smear_num=1 data/delphes/zw_lljj.root data/analysis/zw_lljj.root
+./bin/MakeHxxTree --sample=6 --lumi=300 --xsec=0.2113   data/delphes/zh_vvlljj.root data/analysis/zh_vvlljj.root
+./bin/MakeHxxTree --sample=6 --lumi=300 --xsec=0.05833  data/delphes/zh_vvllbb.root data/analysis/zh_vvllbb.root 
+./bin/MakeHxxTree --sample=7 --lumi=300 --xsec=0.3804   data/delphes/wh_vllljj.root data/analysis/wh_vllljj.root
+./bin/MakeHxxTree --sample=7 --lumi=300 --xsec=0.1049   data/delphes/wh_vlllbb.root data/analysis/wh_vlllbb.root 
 
-./bin/MakeHxxTree --sample=3 --lumi=300 --xsec=466     --smear_met=30 --smear_num=1 data/delphes/wwjj.root data/analysis/wwjj.root
-
-./bin/MakeHxxTree --sample=4 --lumi=300 --xsec=46656   --smear_met=30 --smear_num=1 data/delphes/tt.root data/analysis/tt.root
-
-./bin/MakeHxxTree --sample=5 --lumi=300 --xsec=149     --smear_met=30 --smear_num=1 data/delphes/h_zz_lljj.root data/analysis/h_zz_lljj.root
-./bin/MakeHxxTree --sample=5 --lumi=300 --xsec=10      --smear_met=30 --smear_num=1 data/delphes/h_zz_llbb.root data/analysis/h_zz_llbb.root 
-
-./bin/MakeHxxTree --sample=6 --lumi=300 --xsec=0.03    --smear_met=30 --smear_num=1 data/delphes/zh_vvlljj.root data/analysis/zh_vvlljj.root
-./bin/MakeHxxTree --sample=6 --lumi=300 --xsec=0.003   --smear_met=30 --smear_num=1 data/delphes/zh_vvllbb.root data/analysis/zh_vvllbb.root 
-./bin/MakeHxxTree --sample=7 --lumi=300 --xsec=0.03    --smear_met=30 --smear_num=1 data/delphes/wh_vllljj.root data/analysis/wh_vllljj.root
-./bin/MakeHxxTree --sample=7 --lumi=300 --xsec=0.003   --smear_met=30 --smear_num=1 data/delphes/wh_vlllbb.root data/analysis/wh_vlllbb.root 
-
-./bin/MakeHxxTree --sample=20 --lumi=300 --xsec=14.98  --smear_met=30 --smear_num=1 data/delphes/hxx_lljjxx_mchi_1.root data/analysis/hxx_lljjxx_mchi_1.root
+./bin/MakeHxxTree --sample=20 --lumi=300 --xsec=149.8   data/delphes/hxx_lljjxx_mchi_1.root data/analysis/hxx_lljjxx_mchi_1.root
+#./bin/MakeHxxTree --sample=20 --lumi=300 --xsec=149.8   data/delphes/hxx_lljjxx_mchi_1.root data/analysis/hxx_lljjxx_mchi_100.root
 
 pushd data/analysis
 if (-e all.root) rm all.root

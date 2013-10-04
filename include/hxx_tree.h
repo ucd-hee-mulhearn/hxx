@@ -38,7 +38,6 @@ public:
    void erase_jet(int i);
 
    // met variables:
-   double met, met_phi;
    double nopu_met, nopu_met_phi;
 
    // Read/Write data in this class to a TTree

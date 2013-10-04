@@ -39,8 +39,6 @@ void usage(){
    cout << " --sample=<n>        (0)     set sample id to <n>\n";
    cout << " --lumi=<l>          (14)    set weight for lumi <l> [fb^-1]\n";
    cout << " --xsec=<x>          (0)     set weight for xsec <x> [fb]\n";
-   cout << " --smear_met=<mu>    (0)     set resolution for MET smearing\n";
-   cout << " --smear_num=<n>     (1)     smear each event <n> times\n";
    exit(0);
 }
 
@@ -53,8 +51,6 @@ int main(int argc, char *argv[])
    double lumi = 14.0;
    double xsec = 0.0;
    double weight = 1.0; 
-   double smear_met = 0;
-   int    smear_num = 1;
    
    std::string opt, infile, outfile;
    koptions options(argc, argv);
@@ -67,9 +63,6 @@ int main(int argc, char *argv[])
    options.set("--sample=", sample);   
    options.set("--lumi=", lumi);
    options.set("--xsec=", xsec);
-   options.set("--smear_met=", smear_met);
-   options.set("--smear_num=", smear_num);
-   
 
    //check for unrecognized options (beginning with -- or -)
    while(options.unrecognized_option(opt)){
@@ -87,11 +80,6 @@ int main(int argc, char *argv[])
    cout << "INFO: reading Delphes tree file:   " << infile << "\n";
    cout << "INFO: writing analysis tree file:  " << outfile << "\n";
    cout << "INFO: sample id is " << sample << "\n";
-   if ((smear_met > 0.0) && (smear_num > 0)){
-      cout << "INFO: smearing MET by resolution " << smear_met << "\n";
-      cout << "INFO: smearing each event " << smear_num << " times. \n";
-   }
-
 
    TChain chain("Delphes");
    chain.Add(infile.c_str());
@@ -198,28 +186,7 @@ int main(int argc, char *argv[])
          data.nopu_met_phi = met->Phi;
       }
 
-      if ((smear_met > 0.0) && (smear_num > 0)){
-         data.weight_met = weight / smear_num;
-
-         for (int i=0; i<smear_num; i++){
-            double metx = data.nopu_met * cos(data.nopu_met_phi);
-            double mety = data.nopu_met * sin(data.nopu_met_phi);
-            metx += rng.Gaus() * smear_met;
-            mety += rng.Gaus() * smear_met;
-            data.met = sqrt(metx*metx + mety*mety);
-            data.met_phi = atan2(mety, metx);
-            if (i==0){
-               data.weight=weight;
-            } else {
-               data.weight=0.0;
-            }
-            tree->Fill();
-         }
-      } else {
-         data.met     = data.nopu_met;
-         data.met_phi = data.nopu_met_phi;
-         tree->Fill();
-      }
+      tree->Fill();
    }
    cout << "\n";
 
