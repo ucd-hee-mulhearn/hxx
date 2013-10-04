@@ -89,7 +89,7 @@ mkplots(){
    TH1F    * htest_sig = GetSigHist(f, "htestx", "hxx1", MYRED1, legtest, "HXX (1 GeV)");
    htest_bkg->SetMinimum(basemin);
    htest_bkg->Draw();
-   htest_sig->Draw("LSAME");
+   htest_sig->Draw("HSAME");
    legtest->Draw();
 
    TCanvas * c1 = new TCanvas("c1", "");
@@ -98,12 +98,13 @@ mkplots(){
    c1->cd();
    THStack * hmll_bkg = GetBkgStack(f, "h0mll", "dilepton invariant mass [GeV]", leg1);
    TH1F    * hmll_sig = GetSigHist(f, "h0mll", "hxx1", MYRED1, leg1, "HXX (1 GeV)");
-   hmll_bkg->SetMinimum(basemin);
+   hmll_bkg->SetMinimum(basemin*100);
    hmll_bkg->Draw();
-   hmll_sig->Draw("LSAME");
+   hmll_sig->Draw("HSAME");
    leg1->Draw();
-   c1->SaveAs("plots/mll.png");
-
+   c1->SaveAs("mulhearn14/mll.png");
+   c1->SaveAs("mulhearn14/mll.eps");
+   c1->SaveAs("mulhearn14/mll.pdf");
 
    TCanvas * c2 = new TCanvas("c2", "");
    TLegend * leg2 = new TLegend(0.7, 0.65, 0.90, 0.90);
@@ -113,21 +114,23 @@ mkplots(){
    TH1F    * hmll_sig = GetSigHist (f, "h1mjj", "hxx1", MYRED1, leg1, "HXX (1 GeV)");
    hmjj_bkg->SetMinimum(basemin);
    hmjj_bkg->Draw();
-   hmll_sig->Draw("LSAME");
+   hmll_sig->Draw("HSAME");
    leg2->Draw();
-   c2->SaveAs("plots/mjj.png");
 
    TCanvas * c3 = new TCanvas("c3", "");
    TLegend * leg3 = new TLegend(0.7, 0.65, 0.90, 0.90);
    c3->SetLogy();
    c3->cd();
-   THStack * hmjjll_bkg = GetBkgStack(f, "h2mjjll", "M(jjll) [GeV]", leg3);
-   TH1F    * hmjjll_sig = GetSigHist   (f, "h2mjjll", "hxx1", MYRED1, leg1, "HXX (1 GeV)");
+   THStack * hmjjll_bkg = GetBkgStack(f, "h0mjjll", "M(jjll) [GeV]", leg3);
+   TH1F    * hmjjll_sig = GetSigHist   (f, "h0mjjll", "hxx1", MYRED1, leg1, "HXX (1 GeV)");
    hmjjll_bkg->SetMinimum(basemin);
    hmjjll_bkg->Draw();
-   hmjjll_sig->Draw("LSAME");   
+   hmjjll_sig->Draw("HSAME");   
    leg3->Draw();
-   c3->SaveAs("plots/mjjll.png");
+   c3->SaveAs("mulhearn14/mlljj.png");
+   c3->SaveAs("mulhearn14/mlljj.pdf");
+   c3->SaveAs("mulhearn14/mlljj.eps");
+
 
    TCanvas * c4 = new TCanvas("c4", "");
    TLegend * leg4 = new TLegend(0.7, 0.65, 0.90, 0.90);
@@ -137,9 +140,11 @@ mkplots(){
    TH1F    * hmet_sig = GetSigHist(f, "h3met", "hxx1", MYRED1, leg4, "HXX (1 GeV)");
    hmet_bkg->SetMinimum(basemin);
    hmet_bkg->Draw();
-   hmet_sig->Draw("LSAME");
+   hmet_sig->Draw("HSAME");
    leg4->Draw();
-   c4->SaveAs("plots/met.png");
+   c4->SaveAs("mulhearn14/met.png");
+   c4->SaveAs("mulhearn14/met.pdf");
+   c4->SaveAs("mulhearn14/met.eps");
 
    continue;
 
@@ -151,9 +156,8 @@ mkplots(){
    TH1F    * hnjet_sig = GetSigHist(f, "h1njet", "hxx1", MYRED1, leg5, "HXX (1 GeV)");
    hnjet_bkg->SetMinimum(basemin);
    hnjet_bkg->Draw();
-   hnjet_sig->Draw("LSAME");
+   hnjet_sig->Draw("HSAME");
    leg5->Draw();
-   c5->SaveAs("plots/met.png");
 
    TCanvas * c6 = new TCanvas("c6", "");
    TLegend * leg6 = new TLegend(0.7, 0.65, 0.90, 0.90);
@@ -163,9 +167,11 @@ mkplots(){
    TH1F    * hnbjet_sig = GetSigHist(f, "h0nbjet", "hxx1", MYRED1, leg6, "HXX (1 GeV)");
    hnbjet_bkg->SetMinimum(basemin);
    hnbjet_bkg->Draw();
-   hnbjet_sig->Draw("LSAME");
+   hnbjet_sig->Draw("HSAME");
    leg6->Draw();
-   c6->SaveAs("plots/met.png");
+
+
+
 
    return;
 
@@ -281,6 +287,6 @@ mkplots(){
    
 
    bkg_mll->Draw();
-   hmll_hxx_llvvxx->Draw("LSAME");
+   hmll_hxx_llvvxx->Draw("HSAME");
    */
 }

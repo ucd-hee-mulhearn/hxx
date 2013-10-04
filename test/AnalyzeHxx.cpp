@@ -120,14 +120,22 @@ int main(int argc, char *argv[])
    
    h0mll.add_auto_write(aw);
 
+   double met_upper = 300.0;
+
+   TH1F hfit_sig("hfit_sig","",  100,0.0,300.0);
+   TH1F hfit_bkg("hfit_bkg","",  100,0.0,300.0);
+   int    nsig = 0;
+   double wsig = 0.0;
+   hfit_sig.Sumw2();
+   hfit_bkg.Sumw2();
 
    histogram_manager htestx(new TH1F("htestx","",  100,0.0,200.0),  h0mll, aw);
    histogram_manager htesty(new TH1F("htesty","",  100,-10.0,10.0), h0mll, aw);
    histogram_manager htestz(new TH1F("htestz","",  100,0.0,200.0),  h0mll, aw);
 
    histogram_manager h0mjj   (new TH1F("h0mjj","",  100,0.0,200.0), h0mll, aw);
-   histogram_manager h0mjjll (new TH1F("h0mjjll","",100,0.0,200.0), h0mll, aw);
-   histogram_manager h0met   (new TH1F("h0met","",  100,0.0,200.0), h0mll, aw);
+   histogram_manager h0mjjll (new TH1F("h0mjjll","",100,50.0,300.0), h0mll, aw);
+   histogram_manager h0met   (new TH1F("h0met","",  100,0.0, met_upper), h0mll, aw);
    histogram_manager h0njet  (new TH1F("h0njet","", 8, 2.0, 10.0), h0mll, aw);
    histogram_manager h0nbjet (new TH1F("h0nbjet","", 8, 0.0, 8.0), h0mll, aw);
 
@@ -144,21 +152,21 @@ int main(int argc, char *argv[])
    histogram_manager h1mll   (new TH1F("h1mll","",100,0.0,200.0), h0mll, aw);
    histogram_manager h1mjj   (new TH1F("h1mjj","",  100,0.0,200.0), h0mll, aw);
    histogram_manager h1mjjll (new TH1F("h1mjjll","",100,0.0,200.0), h0mll, aw);
-   histogram_manager h1met   (new TH1F("h1met","",  100,0.0,200.0), h0mll, aw);
+   histogram_manager h1met   (new TH1F("h1met","",  100,0.0, met_upper), h0mll, aw);
    histogram_manager h1njet  (new TH1F("h1njet","", 8, 2.0, 10.0), h0mll, aw);
    histogram_manager h1nbjet (new TH1F("h1nbjet","", 8, 0.0, 8.0), h0mll, aw);
 
    histogram_manager h2mll   (new TH1F("h2mll","",100,0.0,200.0), h0mll, aw);
    histogram_manager h2mjj   (new TH1F("h2mjj","",  100,0.0,200.0), h0mll, aw);
    histogram_manager h2mjjll (new TH1F("h2mjjll","",100,0.0,200.0), h0mll, aw);
-   histogram_manager h2met   (new TH1F("h2met","",  100,0.0,200.0), h0mll, aw);
+   histogram_manager h2met   (new TH1F("h2met","",  100,0.0, met_upper), h0mll, aw);
    histogram_manager h2njet  (new TH1F("h2njet","", 8, 2.0, 10.0), h0mll, aw);
    histogram_manager h2nbjet (new TH1F("h2nbjet","", 8, 0.0, 8.0), h0mll, aw);
 
    histogram_manager h3mll   (new TH1F("h3mll","",100,0.0,200.0), h0mll, aw);
    histogram_manager h3mjj   (new TH1F("h3mjj","",  100,0.0,200.0), h0mll, aw);
    histogram_manager h3mjjll (new TH1F("h3mjjll","",100,0.0,200.0), h0mll, aw);
-   histogram_manager h3met   (new TH1F("h3met","",  100,0.0,200.0), h0mll, aw);
+   histogram_manager h3met   (new TH1F("h3met","",  100,0.0, met_upper), h0mll, aw);
    histogram_manager h3njet  (new TH1F("h3njet","", 8, 2.0, 10.0), h0mll, aw);
    histogram_manager h3nbjet (new TH1F("h3nbjet","", 8, 0.0, 8.0), h0mll, aw);
 
@@ -189,6 +197,11 @@ int main(int argc, char *argv[])
       if (count % nupdate == 0) { cout << "."; cout.flush(); }
 
       tree->GetEntry(entry);
+
+      if (data.sample >= 20) {
+         nsig++;
+         wsig += data.weight;
+      }
 
       if (data.l1_pt < 12.0) continue;
       if (data.l2_pt < 12.0) continue;
@@ -227,8 +240,8 @@ int main(int argc, char *argv[])
       // smear MET by 20 for 8 TeV  (now in Analysis...)
       // smear MET by 30 for 14 TeV (now in Analysis...)
       double met_smear  = 30;
-      //int    met_num    = 100;
       int    met_num    = 1000;
+      //int    met_num    = 10;
       // use reduced weight when looping over entire MET vector:
       double met_weight = (data.weight / (double) met_num);
 
@@ -301,25 +314,6 @@ int main(int argc, char *argv[])
          maxmax = maxb;
       }
 
-
-
-
-
-
-
-
-      //v = vl1 + vl1;
-      //double m11 = v.M();
-      //v = vl1 + vl2;
-      //double m12 = v.M();
-      //v = vl2 + vl1;
-      //double m21 = v.M();
-      //v = vl2 + vl2;
-      //double m22 = v.M();
-
-
-
-
       if (data.jet_pt->size() > 0) {
          h0j1pt  .Fill(data.sample, data.jet_pt ->at(0));
          h0j1eta .Fill(data.sample, data.jet_eta->at(0));
@@ -378,10 +372,16 @@ int main(int argc, char *argv[])
       h3mll.Fill(data.sample, data.mll, data.weight);
       h3mjj.Fill(data.sample, mjj, data.weight);      
       h3mjjll.Fill(data.sample, mjjll, data.weight);      
-
       for (int i=0; i<met.size(); i++) h3met.Fill(data.sample, met[i], met_weight);
 
+      for (int i=0; i<met.size(); i++){
+         if (met_weight > 100){
+            cout << "WARNING:  large weight at MET stage:  " << met_weight << "\n";  
+         }
 
+         if (data.sample >= 20) hfit_sig.Fill(met[i], met_weight);
+         else                   hfit_bkg.Fill(met[i], met_weight);         
+      }
 
       
       //if (met[0] < 100.0) continue;
@@ -408,6 +408,7 @@ int main(int argc, char *argv[])
    TFile * foutroot = new TFile(outroot.c_str(), "RECREATE");
    foutroot->cd();
    aw.WriteAll();
+   foutroot->Close();
 
    //cout << "SUMMARY:  done writing files.\n";
 
@@ -423,7 +424,20 @@ int main(int argc, char *argv[])
    cout << "Cutflow:  Stage 3 (after mjjll cut) \n";
    cutflow.print(3);
 
+   cout << "Fit Histogram Summary:  \n";
+   double SIGTOT = 300 * 149.8;
+   hfit_sig.Scale(1.0/SIGTOT);
+   cout << " -> using total signal events of :    " << SIGTOT << "\n";
+   cout << " -> background integral (evts):       " << hfit_bkg.GetSumOfWeights() << "\n";
+   cout << " -> signal integral (eff):            " << hfit_sig.GetSumOfWeights() << "\n";
+   cout << " -> local count of signal events:     " << nsig << "\n";
+   cout << " -> local integral of signal weight:  " << wsig << "\n";
 
+   TFile ffit("fit.root", "RECREATE");
+   ffit.cd();
+   hfit_sig.Write();
+   hfit_bkg.Write();
+   ffit.Close();
    
 }
 

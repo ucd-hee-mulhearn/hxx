@@ -70,19 +70,21 @@ int main(int argc, char *argv[])
       usage();
    } 
 
-   if (options.size() != 2){
+   if (options.size() < 2){
       usage();
    }
 
-   options.shift_argument(infile);
    options.shift_argument(outfile);
 
-   cout << "INFO: reading Delphes tree file:   " << infile << "\n";
-   cout << "INFO: writing analysis tree file:  " << outfile << "\n";
    cout << "INFO: sample id is " << sample << "\n";
+   cout << "INFO: writing analysis tree file:  " << outfile << "\n";
 
    TChain chain("Delphes");
-   chain.Add(infile.c_str());
+   while(options.shift_argument(infile)){
+      cout << "INFO: adding input file:  " << infile << "\n";   
+      chain.Add(infile.c_str());
+   }
+
    ExRootTreeReader *treeReader = new ExRootTreeReader(&chain);
    Long64_t numberOfEntries = treeReader->GetEntries();
    if (numberOfEntries == 0) { cout << "Zero entries...\n"; return 0; }
