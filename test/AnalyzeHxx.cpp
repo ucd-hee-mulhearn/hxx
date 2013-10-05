@@ -108,6 +108,7 @@ int main(int argc, char *argv[])
    h0mll.add_sample(6,  "_zh");
    h0mll.add_sample(7,  "_wh");
    h0mll.add_sample(20,  "_hxx1");
+   h0mll.add_sample(21,  "_hxx100");
 
    cutflow.add_sample_name(1, "Zjj");
    cutflow.add_sample_name(2, "ZZ,ZW");
@@ -117,13 +118,15 @@ int main(int argc, char *argv[])
    cutflow.add_sample_name(6, "ZH");
    cutflow.add_sample_name(7, "WH");
    cutflow.add_sample_name(20, "HXX1");
+   cutflow.add_sample_name(21, "HXX100");
    
    h0mll.add_auto_write(aw);
 
    double met_upper = 300.0;
 
-   TH1F hfit_sig("hfit_sig","",  100,0.0,300.0);
-   TH1F hfit_bkg("hfit_bkg","",  100,0.0,300.0);
+   int signal_sample = 21;
+   TH1F hfit_sig("signal","",  100,0.0,300.0);
+   TH1F hfit_bkg("sample_1","",  100,0.0,300.0);
    int    nsig = 0;
    double wsig = 0.0;
    hfit_sig.Sumw2();
@@ -198,7 +201,7 @@ int main(int argc, char *argv[])
 
       tree->GetEntry(entry);
 
-      if (data.sample >= 20) {
+      if (data.sample == signal_sample) {
          nsig++;
          wsig += data.weight;
       }
@@ -240,8 +243,8 @@ int main(int argc, char *argv[])
       // smear MET by 20 for 8 TeV  (now in Analysis...)
       // smear MET by 30 for 14 TeV (now in Analysis...)
       double met_smear  = 30;
+      //int    met_num    = 1000;
       int    met_num    = 1000;
-      //int    met_num    = 10;
       // use reduced weight when looping over entire MET vector:
       double met_weight = (data.weight / (double) met_num);
 
@@ -379,8 +382,8 @@ int main(int argc, char *argv[])
             cout << "WARNING:  large weight at MET stage:  " << met_weight << "\n";  
          }
 
-         if (data.sample >= 20) hfit_sig.Fill(met[i], met_weight);
-         else                   hfit_bkg.Fill(met[i], met_weight);         
+         if (data.sample < 20)             hfit_bkg.Fill(met[i], met_weight);
+         if (data.sample == signal_sample) hfit_sig.Fill(met[i], met_weight);         
       }
 
       
@@ -427,13 +430,16 @@ int main(int argc, char *argv[])
    cout << "Fit Histogram Summary:  \n";
    double SIGTOT = 300 * 149.8;
    hfit_sig.Scale(1.0/SIGTOT);
+   cout << " -> signal sample:                    " << signal_sample << "\n";
    cout << " -> using total signal events of :    " << SIGTOT << "\n";
    cout << " -> background integral (evts):       " << hfit_bkg.GetSumOfWeights() << "\n";
    cout << " -> signal integral (eff):            " << hfit_sig.GetSumOfWeights() << "\n";
    cout << " -> local count of signal events:     " << nsig << "\n";
    cout << " -> local integral of signal weight:  " << wsig << "\n";
 
-   TFile ffit("fit.root", "RECREATE");
+   char name[100];
+   sprintf(name, "fit_%d.root", signal_sample);
+   TFile ffit(name, "RECREATE");
    ffit.cd();
    hfit_sig.Write();
    hfit_bkg.Write();
