@@ -1,0 +1,43 @@
+source COMPILE
+
+rm data/analysis/*.root
+
+# Using lumi in fb, xsec in fb^-1
+
+#./bin/MakeHxxTree --sample=1 --lumi=300 --xsec=385284   data/analysis/zjj_mll_gt_80.root data/delphes/zjj_mll_gt_80.root
+#./bin/MakeHxxTree --sample=1 --lumi=300 --xsec=9477     data/analysis/zjj_mll_lt_80.root data/delphes/zjj_mll_lt_80.root
+
+#./bin/MakeHxxTree --sample=2 --lumi=300 --xsec=777.6    data/analysis/zz_lljj.root data/delphes/zz_lljj.root
+#./bin/MakeHxxTree --sample=2 --lumi=300 --xsec=214.6    data/analysis/zz_llbb.root data/delphes/zz_llbb.root
+#./bin/MakeHxxTree --sample=2 --lumi=300 --xsec=1263     data/analysis/zw_lljj.root data/delphes/zw_lljj_HACK.root
+#./bin/MakeHxxTree --sample=3 --lumi=300 --xsec=1388     data/analysis/wwjj.root data/delphes/wwjj.root
+
+./bin/MakeHxxTree --sample=4 --lumi=300 --xsec=5000    data/analysis/8tev/tt_mll_lt_90.root \
+data/delphes/tt/run_100K_14TeV_MLL_LT_90/tag_1_delphes_events.root
+data/delphes/tt/run_100K_14TeV_MLL_LT_90/tag_2_delphes_events.root
+
+./bin/MakeHxxTree --sample=4 --lumi=300 --xsec=5000    data/analysis/8tev/tt_mll_gt_90.root \
+data/delphes/tt/run_100K_14TeV_MLL_GT_90/tag_1_delphes_events.root
+data/delphes/tt/run_100K_14TeV_MLL_GT_90/tag_2_delphes_events.root
+
+#data/delphes/tt/tt_00.root data/delphes/tt/tt_01.root data/delphes/tt/tt_02.root data/delphes/tt/tt_03.root \
+#data/delphes/tt/tt_04.root data/delphes/tt/tt_05.root data/delphes/tt/tt_06.root data/delphes/tt/tt_07.root \
+#data/delphes/tt/tt_08.root data/delphes/tt/tt_09.root data/delphes/tt/tt_10.root data/delphes/tt/tt_11.root \
+#data/delphes/tt/tt_12.root data/delphes/tt/tt_13.root data/delphes/tt/tt_14.root data/delphes/tt/tt_15.root \
+#data/delphes/tt/tt_16.root data/delphes/tt/tt_17.root 
+
+#./bin/MakeHxxTree --sample=5 --lumi=300 --xsec=62.81    data/analysis/h_zz_lljj.root data/delphes/h_zz_lljj.root
+#./bin/MakeHxxTree --sample=5 --lumi=300 --xsec=17.33    data/analysis/h_zz_llbb.root data/delphes/h_zz_llbb.root 
+
+#./bin/MakeHxxTree --sample=6 --lumi=300 --xsec=0.2113   data/analysis/zh_vvlljj.root data/delphes/zh_vvlljj.root
+#./bin/MakeHxxTree --sample=6 --lumi=300 --xsec=0.05833  data/analysis/zh_vvllbb.root data/delphes/zh_vvllbb.root 
+#./bin/MakeHxxTree --sample=7 --lumi=300 --xsec=0.3804   data/analysis/wh_vllljj.root data/delphes/wh_vllljj.root
+#./bin/MakeHxxTree --sample=7 --lumi=300 --xsec=0.1049   data/analysis/wh_vlllbb.root data/delphes/wh_vlllbb.root 
+
+#./bin/MakeHxxTree --sample=20 --lumi=300 --xsec=149.8   data/analysis/hxx_lljjxx_mchi_1.root data/delphes/hxx_lljjxx_mchi_1.root
+#./bin/MakeHxxTree --sample=21 --lumi=300 --xsec=149.8   data/analysis/hxx_lljjxx_mchi_100.root data/delphes/hxx_lljjxx_mchi_100.root
+
+pushd data/analysis/8tev
+if (-e all.root) rm all.root
+hadd all.root *.root
+popd

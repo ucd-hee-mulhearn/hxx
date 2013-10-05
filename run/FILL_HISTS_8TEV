@@ -1,0 +1,2 @@
+source COMPILE
+./bin/AnalyzeHxx data/analysis/8tev/all.root plots/latest.root plots/latest.txt

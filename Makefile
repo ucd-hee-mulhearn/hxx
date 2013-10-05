@@ -6,9 +6,11 @@ LIBNAME=hxx
 LIBRARY_DIR = ./lib
 
 # External Libraries:
-EXT_LIBS       = $(shell gsl-config --libs) $(shell root-config --libs)
-EXT_CFLAGS     = $(shell gsl-config --cflags) $(shell root-config --cflags)
-EXT_LDFLAGS    = root-config --ldflags
+#EXT_LIBS       = $(shell gsl-config --libs) $(shell root-config --libs)
+#EXT_CFLAGS     = $(shell gsl-config --cflags) $(shell root-config --cflags)
+EXT_LIBS       = $(shell root-config --libs)
+EXT_CFLAGS     = $(shell root-config --cflags) -fPIC
+EXT_LDFLAGS    = root-config --ldflags -fPIC
 EXT_SHARED     = ./lib/libDelphes.so
 
 # Local Directory Structure:

@@ -1,7 +1,7 @@
 // koptions.cpp
 
 #include "koptions.h"
-
+#include <stdlib.h>
 #include <vector>
 
 using namespace std;
