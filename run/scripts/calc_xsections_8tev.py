@@ -36,15 +36,16 @@ PB_TO_FB = 1E3
 
 MG_Z   = 1.0
 MG_ZJJ = 2185
-MG_ZBB = 1.0
-MG_ZJJ_MLL_GT_80 = 1.0
-MG_ZJJ_MLL_LT_80 = 1.0
-MG_ZJJ_MLL_TOT   = 1.0
+MG_ZBB = 309.5
+MG_ZJJ_MLL_GT_80 = 82.604
+MG_ZJJ_MLL_LT_80 = 1.2812
+MG_ZJJ_MLL_TOT   = 83.885
 
-MG_ZZ   = 1.0
-MG_ZW   = 1.0
-MG_WW   = 1.0
-MG_WWJJ = 1.0
+
+MG_ZZ   = 4.921
+MG_ZW   = 12.87
+#MG_WW   = 1.0
+MG_WWJJ = 9.387
 
 #
 # K-Factors (Needed!)
@@ -121,6 +122,10 @@ print "Signal:  "
 print ""
 print "Hxx            ........................", SIGMA_HXX 
 print "Hxx, H->ZZ->lljj ......................", SIGMA_HXX * BR_H_ZZ * BR_Z_LL * BR_Z_JJ * 2
+print "Hxx, H->ZZ->lljj (not bb)..............", SIGMA_HXX * BR_H_ZZ * BR_Z_LL * BR_Z_JJ_NOT_BB * 2
+print "Hxx, H->ZZ->llbb ......................", SIGMA_HXX * BR_H_ZZ * BR_Z_LL * BR_Z_BB * 2
+
+
 print ""
 print "Missing Backgrounds:  "
 print ""

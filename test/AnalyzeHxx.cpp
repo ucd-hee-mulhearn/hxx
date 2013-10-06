@@ -22,8 +22,9 @@ using namespace std;
 using namespace kutil;
 
 void usage(){
-   cout << "usage:  AnalyzeHxx  [OPTIONS] <input_file> <output_root> <output_txt>\n";
+   cout << "usage:  AnalyzeHxx  [OPTIONS] <input_file> <output_root> <output_dir>\n";
    cout << "\n";
+   cout << "  --met_smear=<x>   : extra amount to smear MET.\n";
    exit(0);
 }
 
@@ -68,14 +69,15 @@ int main(int argc, char *argv[])
    rng.SetSeed(2013);
    hxx_tree data;
    
-   std::string opt, infile, outroot, outtxt;
+   std::string opt, infile, outroot, outdir;
    koptions options(argc, argv);
    
    //check for the --help option:
    if ( options.find("--help") ) { usage(); }
    //options.set("--seed=", seed);   
    //if (seed > 0) rng.SetSeed(seed);
-   //options.set("--sample=", sample);   
+   double met_smear = 30.0;
+   options.set("--met_smear=", met_smear);   
 
    //check for unrecognized options (beginning with -- or -)
    while(options.unrecognized_option(opt)){
@@ -89,12 +91,12 @@ int main(int argc, char *argv[])
 
    options.shift_argument(infile);
    options.shift_argument(outroot);
-   options.shift_argument(outtxt);
+   options.shift_argument(outdir);
 
-   cout << "INFO: reading analysis tree file:   " << infile  << "\n";
-   cout << "INFO: writing histogram root file:  " << outroot << "\n";
-   cout << "INFO: appending cut flow txt file:  " << outtxt  << "\n";
-   cout << "INFO: sample id is " << data.sample << "\n";
+   cout << "INFO: reading analysis tree file:    " << infile  << "\n";
+   cout << "INFO: writing histogram root file:   " << outroot << "\n";
+   cout << "INFO: writing results to directory:  " << outdir  << "\n";
+   cout << "INFO: MET smearing amount is " << met_smear << "\n";
 
    auto_write aw;
 
@@ -108,7 +110,11 @@ int main(int argc, char *argv[])
    h0mll.add_sample(6,  "_zh");
    h0mll.add_sample(7,  "_wh");
    h0mll.add_sample(20,  "_hxx1");
-   h0mll.add_sample(21,  "_hxx100");
+   h0mll.add_sample(21,  "_hxx10");
+   h0mll.add_sample(22,  "_hxx100");
+   h0mll.add_sample(23,  "_hxx500");
+   h0mll.add_sample(24,  "_hxx1000");
+
 
    cutflow.add_sample_name(1, "Zjj");
    cutflow.add_sample_name(2, "ZZ,ZW");
@@ -118,19 +124,33 @@ int main(int argc, char *argv[])
    cutflow.add_sample_name(6, "ZH");
    cutflow.add_sample_name(7, "WH");
    cutflow.add_sample_name(20, "HXX1");
-   cutflow.add_sample_name(21, "HXX100");
+   cutflow.add_sample_name(21, "HXX10");
+   cutflow.add_sample_name(22, "HXX100");
+   cutflow.add_sample_name(23, "HXX500");
+   cutflow.add_sample_name(24, "HXX1000");
+
    
    h0mll.add_auto_write(aw);
 
    double met_upper = 300.0;
 
-   int signal_sample = 21;
-   TH1F hfit_sig("signal","",  100,0.0,300.0);
+
+
    TH1F hfit_bkg("sample_1","",  100,0.0,300.0);
+   TH1F hfit_sig20("signal20","",  100,0.0,300.0);
+   TH1F hfit_sig21("signal21","",  100,0.0,300.0);
+   TH1F hfit_sig22("signal22","",  100,0.0,300.0);
+   TH1F hfit_sig23("signal23","",  100,0.0,300.0);
+   TH1F hfit_sig24("signal24","",  100,0.0,300.0);
+
    int    nsig = 0;
    double wsig = 0.0;
-   hfit_sig.Sumw2();
    hfit_bkg.Sumw2();
+   hfit_sig20.Sumw2();
+   hfit_sig21.Sumw2();
+   hfit_sig22.Sumw2();
+   hfit_sig23.Sumw2();
+   hfit_sig24.Sumw2();
 
    histogram_manager htestx(new TH1F("htestx","",  100,0.0,200.0),  h0mll, aw);
    histogram_manager htesty(new TH1F("htesty","",  100,-10.0,10.0), h0mll, aw);
@@ -201,7 +221,7 @@ int main(int argc, char *argv[])
 
       tree->GetEntry(entry);
 
-      if (data.sample == signal_sample) {
+      if (data.sample == 20) {
          nsig++;
          wsig += data.weight;
       }
@@ -240,9 +260,10 @@ int main(int argc, char *argv[])
       vector<double> met;
       vector<double> met_phi;
 
-      // smear MET by 20 for 8 TeV  (now in Analysis...)
-      // smear MET by 30 for 14 TeV (now in Analysis...)
-      double met_smear  = 30;
+      // smear MET by 20 for 8 TeV  (now set as option...)
+      // smear MET by 30 for 14 TeV (now set as option...)
+      // double met_smear  = 30;
+
       //int    met_num    = 1000;
       int    met_num    = 1000;
       // use reduced weight when looping over entire MET vector:
@@ -382,8 +403,13 @@ int main(int argc, char *argv[])
             cout << "WARNING:  large weight at MET stage:  " << met_weight << "\n";  
          }
 
-         if (data.sample < 20)             hfit_bkg.Fill(met[i], met_weight);
-         if (data.sample == signal_sample) hfit_sig.Fill(met[i], met_weight);         
+         if (data.sample < 20)  hfit_bkg.Fill(met[i], met_weight);
+
+         if (data.sample == 20) hfit_sig20.Fill(met[i], met_weight);         
+         if (data.sample == 21) hfit_sig21.Fill(met[i], met_weight);         
+         if (data.sample == 22) hfit_sig22.Fill(met[i], met_weight);         
+         if (data.sample == 23) hfit_sig23.Fill(met[i], met_weight);         
+         if (data.sample == 24) hfit_sig24.Fill(met[i], met_weight);         
       }
 
       
@@ -429,22 +455,66 @@ int main(int argc, char *argv[])
 
    cout << "Fit Histogram Summary:  \n";
    double SIGTOT = 300 * 149.8;
-   hfit_sig.Scale(1.0/SIGTOT);
-   cout << " -> signal sample:                    " << signal_sample << "\n";
+   hfit_sig20.Scale(1.0/SIGTOT);
+   hfit_sig21.Scale(1.0/SIGTOT);
+   hfit_sig22.Scale(1.0/SIGTOT);
+   hfit_sig23.Scale(1.0/SIGTOT);
+   hfit_sig24.Scale(1.0/SIGTOT);
    cout << " -> using total signal events of :    " << SIGTOT << "\n";
    cout << " -> background integral (evts):       " << hfit_bkg.GetSumOfWeights() << "\n";
-   cout << " -> signal integral (eff):            " << hfit_sig.GetSumOfWeights() << "\n";
+   cout << " -> signal 1    integral (eff):       " << hfit_sig20.GetSumOfWeights() << "\n";
+   cout << " -> signal 10  integral (eff):        " << hfit_sig21.GetSumOfWeights() << "\n";
+   cout << " -> signal 100 integral (eff):        " << hfit_sig22.GetSumOfWeights() << "\n";
+   cout << " -> signal 500 integral (eff):        " << hfit_sig23.GetSumOfWeights() << "\n";
+   cout << " -> signal 1000integral (eff):        " << hfit_sig24.GetSumOfWeights() << "\n";
    cout << " -> local count of signal events:     " << nsig << "\n";
    cout << " -> local integral of signal weight:  " << wsig << "\n";
 
    char name[100];
-   sprintf(name, "fit_%d.root", signal_sample);
-   TFile ffit(name, "RECREATE");
-   ffit.cd();
-   hfit_sig.Write();
+   TFile * f = NULL;
+   TH1F * h = NULL;
+
+   sprintf(name, "%s/mchi1.root", outdir.c_str());
+   f = new TFile(name, "RECREATE");
+   f->cd();
+   h = (TH1F *) hfit_sig20.Clone("signal");
+   h->Write();
    hfit_bkg.Write();
-   ffit.Close();
-   
+   f->Close();
+
+   sprintf(name, "%s/mchi10.root", outdir.c_str());
+   f = new TFile(name, "RECREATE");
+   f->cd();
+   h = (TH1F *) hfit_sig21.Clone("signal");
+   h->Write();
+   hfit_bkg.Write();
+   f->Close();
+
+   sprintf(name, "%s/mchi100.root", outdir.c_str());
+   f = new TFile(name, "RECREATE");
+   f->cd();
+   h = (TH1F *) hfit_sig22.Clone("signal");
+   h->Write();
+   hfit_bkg.Write();
+   f->Close();
+
+   sprintf(name, "%s/mchi500.root", outdir.c_str());
+   f = new TFile(name, "RECREATE");
+   f->cd();
+   h = (TH1F *) hfit_sig23.Clone("signal");
+   h->Write();
+   hfit_bkg.Write();
+   f->Close();
+
+   sprintf(name, "%s/mchi1000.root", outdir.c_str());
+   f = new TFile(name, "RECREATE");
+   f->cd();
+   h = (TH1F *) hfit_sig24.Clone("signal");
+   h->Write();
+   hfit_bkg.Write();
+   f->Close();
+
+
 }
 
 

@@ -39,6 +39,7 @@ void usage(){
    cout << " --sample=<n>        (0)     set sample id to <n>\n";
    cout << " --lumi=<l>          (14)    set weight for lumi <l> [fb^-1]\n";
    cout << " --xsec=<x>          (0)     set weight for xsec <x> [fb]\n";
+   cout << " --maxevent=<n>      (0)     if greater than zero, write only <n> events.\n";
    exit(0);
 }
 
@@ -51,7 +52,8 @@ int main(int argc, char *argv[])
    double lumi = 14.0;
    double xsec = 0.0;
    double weight = 1.0; 
-   
+   int maxevent = 0;
+
    std::string opt, infile, outfile;
    koptions options(argc, argv);
    
@@ -63,6 +65,7 @@ int main(int argc, char *argv[])
    options.set("--sample=", sample);   
    options.set("--lumi=", lumi);
    options.set("--xsec=", xsec);
+   options.set("--maxevent=", maxevent);
 
    //check for unrecognized options (beginning with -- or -)
    while(options.unrecognized_option(opt)){
@@ -88,6 +91,8 @@ int main(int argc, char *argv[])
    ExRootTreeReader *treeReader = new ExRootTreeReader(&chain);
    Long64_t numberOfEntries = treeReader->GetEntries();
    if (numberOfEntries == 0) { cout << "Zero entries...\n"; return 0; }
+   if ((maxevent > 0) && (maxevent < numberOfEntries)) numberOfEntries = maxevent;
+
    // Get pointers to branches used in this analysis
    TClonesArray *branchJet      = treeReader->UseBranch("Jet");
    TClonesArray *branchElec     = treeReader->UseBranch("Electron");
@@ -192,7 +197,7 @@ int main(int argc, char *argv[])
    }
    cout << "\n";
 
-   cout << "SUMMARY:  wrote " << tree->GetEntries() << " to analysis tree from " << count << " events\n";
+   cout << "SUMMARY:  wrote " << tree->GetEntries() << " to analysis tree from " << count << " events considered.\n";
 
    file->cd();
    tree->Write();

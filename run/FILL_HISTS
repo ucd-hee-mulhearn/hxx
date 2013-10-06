@@ -1,2 +1,0 @@
-source COMPILE
-./bin/AnalyzeHxx data/analysis/all.root plots/latest.root plots/latest.txt
