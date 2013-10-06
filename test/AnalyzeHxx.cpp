@@ -78,6 +78,8 @@ int main(int argc, char *argv[])
    //if (seed > 0) rng.SetSeed(seed);
    double met_smear = 30.0;
    options.set("--met_smear=", met_smear);   
+   int    num_smear = 1;
+   options.set("--num_smear=", num_smear);   
 
    //check for unrecognized options (beginning with -- or -)
    while(options.unrecognized_option(opt)){
@@ -97,6 +99,7 @@ int main(int argc, char *argv[])
    cout << "INFO: writing histogram root file:   " << outroot << "\n";
    cout << "INFO: writing results to directory:  " << outdir  << "\n";
    cout << "INFO: MET smearing amount is " << met_smear << "\n";
+   cout << "INFO: MET smearing number is " << num_smear << "\n";
 
    auto_write aw;
 
@@ -264,15 +267,13 @@ int main(int argc, char *argv[])
       // smear MET by 30 for 14 TeV (now set as option...)
       // double met_smear  = 30;
 
-      //int    met_num    = 1000;
-      int    met_num    = 1000;
       // use reduced weight when looping over entire MET vector:
-      double met_weight = (data.weight / (double) met_num);
+      double met_weight = (data.weight / (double) num_smear);
 
       double nopu_metx = data.nopu_met * cos(data.nopu_met_phi);
       double nopu_mety = data.nopu_met * sin(data.nopu_met_phi);
       
-      for (int i=0; i<met_num; i++){
+      for (int i=0; i<num_smear; i++){
          double metx        = nopu_metx + rng.Gaus() * met_smear;
          double mety        = nopu_mety + rng.Gaus() * met_smear;
          double new_met     = sqrt(metx*metx + mety*mety);

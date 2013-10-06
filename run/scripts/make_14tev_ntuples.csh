@@ -1,6 +1,6 @@
 source COMPILE
 
-setenv MAXEVENT 10000
+setenv MAXEVENT 100000
 
 rm data/analysis/14tev/*.root   ######  DELETING FILES HERE #####
 

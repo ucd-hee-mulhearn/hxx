@@ -1,7 +1,7 @@
 source COMPILE
 
 # set to zero for all, non-zero to put cap on number output
-setenv MAXEVENT 10000
+setenv MAXEVENT 100000
 
 rm data/analysis/8tev/*.root   ######  DELETING FILES HERE #####
 
