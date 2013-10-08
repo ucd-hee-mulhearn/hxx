@@ -91,6 +91,7 @@ int main(int argc, char *argv[])
    ExRootTreeReader *treeReader = new ExRootTreeReader(&chain);
    Long64_t numberOfEntries = treeReader->GetEntries();
    if (numberOfEntries == 0) { cout << "Zero entries...\n"; return 0; }
+   double Ngen = numberOfEntries;
    if ((maxevent > 0) && (maxevent < numberOfEntries)) numberOfEntries = maxevent;
 
    // Get pointers to branches used in this analysis
@@ -101,7 +102,6 @@ int main(int argc, char *argv[])
 
    // calculate appropriate weight:
    if (xsec > 0.0){
-      double Ngen = numberOfEntries;
       double Lgen = Ngen / xsec;
       weight = lumi * xsec / Ngen;
       cout << "INFO:  calculating event weights:\n";

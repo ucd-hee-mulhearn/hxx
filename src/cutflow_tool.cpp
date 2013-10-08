@@ -3,6 +3,7 @@
 #include <iomanip>
 
 #include "cutflow_tool.h"
+#include "math.h"
 
 using namespace std;
 
@@ -38,6 +39,25 @@ void cutflow_tool::print(int stage){
          cout << "    events:  " << evts << "\n";
       }
    }
+
+   double bkg = 0;
+   for (int i=0; i<x.size(); i++){
+     if (i < 20) bkg+= x[i];
+   }
+   if (bkg <= 0.0) return;
+   
+   for (int i=0; i<x.size(); i++){
+     if (i >= 20){
+       if ((sample_names.size() > i) && (sample_names[i] != ""))
+	 cout << setw(10) << sample_names[i];
+       else 
+	 cout << "sample " << setw(3) << i;
+       cout << " S / sqrt(B) = " << x[i] / sqrt(bkg) << "\n";
+     }
+   }
+
+
+
 }
 
 void cutflow_tool::add_sample_name(int sample, const std::string & sample_name){

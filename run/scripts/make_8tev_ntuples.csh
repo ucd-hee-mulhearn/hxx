@@ -1,11 +1,15 @@
 source COMPILE
 
 # set to zero for all, non-zero to put cap on number output
-setenv MAXEVENT 100000
+setenv MAXEVENT 0
 
 rm data/analysis/8tev/*.root   ######  DELETING FILES HERE #####
 
 # Using lumi in fb, xsec in fb^-1
+
+
+./bin/MakeHxxTree --maxevent=$MAXEVENT --sample=8 --lumi=20 --xsec=2553000    data/analysis/8tev/wjjj.root \
+data/delphes_orig/wjjj/Events/run_*_8TeV/tag_*_delphes_events.root
 
 ./bin/MakeHxxTree --maxevent=$MAXEVENT --sample=1 --lumi=20 --xsec=145020    data/analysis/8tev/zjj_mll_gt_80.root \
 data/delphes/zjj/run_100K_8TeV_MLL_GT_80/tag_1_delphes_events.root

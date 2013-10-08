@@ -1,13 +1,17 @@
 source COMPILE
 
-setenv MAXEVENT 100000
+setenv MAXEVENT 0
 
 rm data/analysis/14tev/*.root   ######  DELETING FILES HERE #####
 
 # Using lumi in fb, xsec in fb^-1
 
+./bin/MakeHxxTree --maxevent=$MAXEVENT --sample=8 --lumi=300 --xsec=7951000    data/analysis/14tev/wjjj.root \
+data/delphes_orig/wjjj/Events/run_*_14TeV/tag_*_delphes_events.root
+
 ./bin/MakeHxxTree --maxevent=$MAXEVENT --sample=1 --lumi=300 --xsec=385283    data/analysis/14tev/zjj_mll_gt_80.root \
-data/delphes/zjj/run_100K_14TeV_MLL_GT_80/tag_1_delphes_events.root
+data/delphes/zjj/run_100K_14TeV_MLL_GT_80/tag_1_delphes_events.root \
+data/delphes/zjj/run_100K_14TeV_MLL_GT_80/tag_2_delphes_events.root
 
 ./bin/MakeHxxTree --maxevent=$MAXEVENT --sample=1 --lumi=300 --xsec=9477     data/analysis/14tev/zjj_mll_lt_80.root \
 data/delphes/zjj/run_100K_14TeV_MLL_LT_80/tag_1_delphes_events.root \
@@ -78,7 +82,7 @@ data/delphes/hxx_llbbxx/run_14tev_mchi500/tag_1_delphes_events.root
 
 ./bin/MakeHxxTree --maxevent=$MAXEVENT --sample=24 --lumi=300 --xsec=117.4   data/analysis/14tev/hxx_lljjxx_mchi_1000.root \
 data/delphes/hxx_lljjxx/run_14tev_mchi500/tag_1_delphes_events.root
-./bin/MakeHxxTree --maxevent=$MAXEVENT --sampley=24 --lumi=300 --xsec=32.40   data/analysis/14tev/hxx_llbbxx_mchi_1000.root \
+./bin/MakeHxxTree --maxevent=$MAXEVENT --sample=24 --lumi=300 --xsec=32.40   data/analysis/14tev/hxx_llbbxx_mchi_1000.root \
 data/delphes/hxx_llbbxx/run_14tev_mchi1000/tag_1_delphes_events.root
 
 pushd data/analysis/14tev

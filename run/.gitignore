@@ -1,6 +1,7 @@
 RSYNC_LOG
 data
 lib
+results
 mulhearn
 mulhearn14
 *.tar

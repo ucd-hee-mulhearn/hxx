@@ -35,7 +35,7 @@ void histogram_manager::add_sample(int sample, const std::string & tag){
 
    this->sample.push_back (sample);
    this->tag.push_back    (tag);
-   cout << "INFO:  adding histogram named " << hname << " to managed collection.\n";
+   //cout << "INFO:  adding histogram named " << hname << " to managed collection.\n";
    vhist.push_back((TH1F*) hbase->Clone(hname.c_str()));
 }
 
