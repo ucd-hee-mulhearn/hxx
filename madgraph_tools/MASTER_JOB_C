@@ -1,0 +1,23 @@
+
+hostname
+
+# CJOBS:
+
+pushd b_wh_vllljj
+source RUN_100K
+popd
+
+pushd b_zh_vvlljj
+source RUN_100K
+popd
+
+pushd b_wh_vlllbb
+source RUN_100K
+popd
+
+pushd b_zh_vvllbb
+source RUN_100K
+popd
+
+echo "FINISHED MASTER JOB LIST C"
+

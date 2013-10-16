@@ -1,0 +1,3 @@
+pushd ../CMSSW_5_3_11_patch4/
+cmsenv
+popd

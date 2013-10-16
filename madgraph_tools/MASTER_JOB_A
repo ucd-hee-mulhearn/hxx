@@ -1,0 +1,19 @@
+
+hostname
+
+# A JOBS:
+
+pushd b_tt
+source RUN_100K_MLL_90
+popd
+
+pushd b_zjj
+source RUN_100K_MLL_80
+popd
+
+pushd b_h_zz_lljj
+source RUN_100K
+popd
+
+echo "FINISHED MASTER JOB LIST A"
+

@@ -1,0 +1,5 @@
+echo ""
+grep ebeam *.dat
+echo ""
+grep nevents *.dat
+echo ""

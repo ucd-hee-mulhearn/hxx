@@ -1,0 +1,61 @@
+
+hostname
+
+# A JOBS:
+#b_h_zz_llbb
+#b_h_zz_lljj
+#b_tt
+#b_zjj
+
+# B JOBS:
+#b_wwjj_lvlvjj
+#b_zw_lljj
+#b_zz_llbb
+#b_zz_lljj
+
+# CJOBS:
+#b_wh_vlllbb
+#b_wh_vllljj
+#b_zh_vvllbb
+#b_zh_vvlljj
+
+
+# B JOBS:
+
+pushd b_wwjj_lvlvjj
+source RUN_100K_MLL_90
+popd
+
+pushd b_zw_lljj
+source RUN_100K_MLL_90
+popd
+
+pushd b_zz_llbb
+source RUN_100K_MLL_90
+popd
+
+pushd b_zz_lljj
+source RUN_100K_MLL_90
+popd
+
+pushd b_wwjj_lvlvjj
+source RUN_100K_MLL_90
+source RUN_100K_MLL_90
+source RUN_100K_MLL_90
+source RUN_100K_MLL_90
+popd
+
+pushd b_zw_lljj
+source RUN_100K_MLL_90
+popd
+
+pushd b_zz_llbb
+source RUN_100K_MLL_90
+popd
+
+pushd b_zz_lljj
+source RUN_100K_MLL_90
+popd
+
+echo "FINISHED MASTER JOB LIST B"
+

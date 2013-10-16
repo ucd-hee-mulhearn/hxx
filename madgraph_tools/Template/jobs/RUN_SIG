@@ -1,0 +1,14 @@
+
+./jobs/sig_job.csh 10000 4000    1 run_8tev_mchi1
+./jobs/sig_job.csh 10000 4000   10 run_8tev_mchi10
+./jobs/sig_job.csh 10000 4000  100 run_8tev_mchi100
+./jobs/sig_job.csh 10000 4000  500 run_8tev_mchi500
+./jobs/sig_job.csh 10000 4000 1000 run_8tev_mchi1000
+
+./jobs/sig_job.csh 10000 7000    1 run_14tev_mchi1
+./jobs/sig_job.csh 10000 7000   10 run_14tev_mchi10
+./jobs/sig_job.csh 10000 7000  100 run_14tev_mchi100
+./jobs/sig_job.csh 10000 7000  500 run_14tev_mchi500
+./jobs/sig_job.csh 10000 7000 1000 run_14tev_mchi1000
+
+
