@@ -47,13 +47,18 @@ MG_WW   = 72.52
 MG_WWJJ = 29.75
 
 #
-# K-Factors (Needed!)
+# K-Factors
 #
+#      8 Tev             14 TeV
+#      Z     1.4              1.4
+#      WW    1.74727691185    1.91
+#      WZ    1.76816074189    1.88094373866
+#      ZZ    1.5652173913     1.62271062271
 
-K_Z    = 1
-K_ZZ   = 1
-K_ZW   = 1
-K_WW   = 1
+K_Z    = 1.4
+K_ZZ   = 1.6
+K_ZW   = 1.9
+K_WW   = 1.9
 
 #
 # Cross-sections derived from MG plus K-Factors:

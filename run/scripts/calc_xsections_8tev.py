@@ -34,7 +34,7 @@ BR_W_JJ = 0.6760
 # Madgraph reports xsec in **pb**
 PB_TO_FB = 1E3
 
-MG_Z   = 1.0
+MG_Z   = 25220
 MG_ZJJ = 2185
 MG_ZBB = 309.5
 MG_ZJJ_MLL_GT_80 = 82.604
@@ -42,19 +42,26 @@ MG_ZJJ_MLL_LT_80 = 1.2812
 MG_ZJJ_MLL_TOT   = 83.885
 
 
-MG_ZZ   = 4.921
-MG_ZW   = 12.87
-#MG_WW   = 1.0
+MG_ZZ   = 4.921   # MCFM LO:  4.17
+MG_ZW   = 12.87   # MCFM LO: 12.94
+MG_WW   = 34.74   # MCFM LO: 35.56
 MG_WWJJ = 9.387
 
-#
-# K-Factors (Needed!)
-#
 
-K_Z    = 1
-K_ZZ   = 1
-K_ZW   = 1
-K_WW   = 1
+#
+# K-Factors 
+#
+#      8 Tev             14 TeV
+#      Z     1.4              1.4
+#      WW    1.74727691185    1.91
+#      WZ    1.76816074189    1.88094373866
+#      ZZ    1.5652173913     1.62271062271
+      
+
+K_Z    = 1.4
+K_ZZ   = 1.6
+K_ZW   = 1.8
+K_WW   = 1.7
 
 #
 # Cross-sections derived from MG plus K-Factors:
