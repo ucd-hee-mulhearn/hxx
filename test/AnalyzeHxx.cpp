@@ -32,37 +32,44 @@ void usage(){
    exit(0);
 }
 
-void best_mjj(hxx_tree & data, double & mjj, double & mjjll, int & j1, int & j2){
-   const double mZ = 60.0;
+void best_mjj(double target_mZ, hxx_tree & data, double & mjj, double & mjjll, int & j1, int & j2){
    TLorentzVector v1, v2, v3, v4, v;
    int n = data.jet_pt->size();
    
    mjj = mjjll = 0;
    j1 = j2 = 0;
    
-   for (int i=0; i<n-1;i++){
-      for (int j=i+1; j<n;j++){
-         v1.SetPtEtaPhiM(data.jet_pt->at(i), data.jet_eta->at(i), data.jet_phi->at(i), 0.0);
-         v2.SetPtEtaPhiM(data.jet_pt->at(j), data.jet_eta->at(j), data.jet_phi->at(j), 0.0);
-         v = v1 + v2;
-         double m = v.M();
-         if (fabs(m - mZ) < fabs(mjj-mZ)){
-            mjj = m;
-            j1 = i;
-            j2 = i;
-         }
-      }
-   }
+
+   //for (int i=0; i<n-1;i++){
+   //for (int j=i+1; j<n;j++){
+   //v1.SetPtEtaPhiM(data.jet_pt->at(i), data.jet_eta->at(i), data.jet_phi->at(i), 0.0);
+   //v2.SetPtEtaPhiM(data.jet_pt->at(j), data.jet_eta->at(j), data.jet_phi->at(j), 0.0);
+   //v = v1 + v2;
+   //double m = v.M();
+   //if ((mjj==0)|| (fabs(m - target_mZ) < fabs(mjj-target_mZ))){
+   //mjj = m;
+   //j1 = i;
+   //j2 = j;
+   //} } }
+
+   j1 = 0;
+   j2 = 1;
+   v1.SetPtEtaPhiM(data.jet_pt->at(j1), data.jet_eta->at(j1), data.jet_phi->at(j1), 0.0);
+   v2.SetPtEtaPhiM(data.jet_pt->at(j2), data.jet_eta->at(j2), data.jet_phi->at(j2), 0.0);
+   v = v1 + v2;
+   mjj = v.M();
+
    
    if (mjj > 0.0){
-      double eps = 60.0 / mjj;
-
-      v1.SetPtEtaPhiM(eps*data.jet_pt->at(j1), data.jet_eta->at(j1), data.jet_phi->at(j1), 0.0);
-      v2.SetPtEtaPhiM(eps*data.jet_pt->at(j2), data.jet_eta->at(j2), data.jet_phi->at(j2), 0.0);
-      v3.SetPtEtaPhiM(data.l1_pt, data.l1_eta, data.l1_phi,0);
-      v4.SetPtEtaPhiM(data.l2_pt, data.l2_eta, data.l2_phi,0);
-      v = v1 + v2 + v3 + v4;
-      mjjll = v.M();
+     double eps = 90.0 / mjj;
+     eps = 1.0; // no correction...
+     
+     v1.SetPtEtaPhiM(eps*data.jet_pt->at(j1), data.jet_eta->at(j1), data.jet_phi->at(j1), 0.0);
+     v2.SetPtEtaPhiM(eps*data.jet_pt->at(j2), data.jet_eta->at(j2), data.jet_phi->at(j2), 0.0);
+     v3.SetPtEtaPhiM(data.l1_pt, data.l1_eta, data.l1_phi,0);
+     v4.SetPtEtaPhiM(data.l2_pt, data.l2_eta, data.l2_phi,0);
+     v = v1 + v2 + v3 + v4;
+     mjjll = v.M();
    }
 }
 
@@ -167,7 +174,7 @@ void best_mjl(hxx_tree & data, double & mjl, int j1, int j2){
          maxmax = maxb;
       }
 
-      mjl = maxmax;
+      mjl = maxmin;
 }
 
 
@@ -215,12 +222,16 @@ int main(int argc, char *argv[])
    int mode_8tev = options.find("--8tev");
    int pub_plots = options.find("--pub_plots");
 
+   int zll_offshell = 1;
+   
+
+
    double lumi = 300;
-   double met_cut = 250.0;
+   double met_cut = 200.0;
 
    if (mode_8tev){
      lumi = 20.0;
-     met_cut = 85;
+     met_cut = 200;
      cout << "INFO:  settings for sqrt(s) = 8 TeV\n";
    } else {
      cout << "INFO:  settings for sqrt(s) = 14 TeV\n";
@@ -332,10 +343,11 @@ int main(int argc, char *argv[])
 
    histogram_manager h0mjj   (new TH1F("h0mjj","",  100,0.0,200.0), h0mll, aw);
    histogram_manager h0mjl   (new TH1F("h0mjl","",  100,0.0,200.0), h0mll, aw);
-   histogram_manager h0mjjll (new TH1F("h0mjjll","",100,50.0,300.0), h0mll, aw);
+   histogram_manager h0mjjll (new TH1F("h0mjjll","",100,00.0,500.0), h0mll, aw);
    histogram_manager h0met   (new TH1F("h0met","",  100,0.0, met_upper), h0mll, aw);
    histogram_manager h0njet  (new TH1F("h0njet","", 8, 2.0, 10.0), h0mll, aw);
    histogram_manager h0nbjet (new TH1F("h0nbjet","", 8, 0.0, 8.0), h0mll, aw);
+   histogram_manager h0ht    (new TH1F("h0ht","",    100,0.0,500.0), h0mll, aw);
 
    histogram_manager h0l1pt(new TH1F("h0l1pt","",100,0.0,200.0), h0mll, aw);
    histogram_manager h0l2pt(new TH1F("h0l2pt","",100,0.0,200.0), h0mll, aw);
@@ -350,7 +362,7 @@ int main(int argc, char *argv[])
    histogram_manager h1mll   (new TH1F("h1mll","",100,0.0,200.0), h0mll, aw);
    histogram_manager h1mjj   (new TH1F("h1mjj","",  100,0.0,200.0), h0mll, aw);
    histogram_manager h1mjl   (new TH1F("h1mjl","",  100,0.0,200.0), h0mll, aw);
-   histogram_manager h1mjjll (new TH1F("h1mjjll","",100,0.0,200.0), h0mll, aw);
+   histogram_manager h1mjjll (new TH1F("h1mjjll","",100,00.0,500.0), h0mll, aw);
    histogram_manager h1met   (new TH1F("h1met","",  100,0.0, met_upper), h0mll, aw);
    histogram_manager h1njet  (new TH1F("h1njet","", 8, 2.0, 10.0), h0mll, aw);
    histogram_manager h1nbjet (new TH1F("h1nbjet","", 8, 0.0, 8.0), h0mll, aw);
@@ -358,7 +370,7 @@ int main(int argc, char *argv[])
    histogram_manager h2mll   (new TH1F("h2mll","",100,0.0,200.0), h0mll, aw);
    histogram_manager h2mjj   (new TH1F("h2mjj","",  100,0.0,200.0), h0mll, aw);
    histogram_manager h2mjl   (new TH1F("h2mjl","",  100,0.0,200.0), h0mll, aw);
-   histogram_manager h2mjjll (new TH1F("h2mjjll","",100,0.0,200.0), h0mll, aw);
+   histogram_manager h2mjjll (new TH1F("h2mjjll","",100,0.0,500.0), h0mll, aw);
    histogram_manager h2met   (new TH1F("h2met","",  100,0.0, met_upper), h0mll, aw);
    histogram_manager h2njet  (new TH1F("h2njet","", 8, 2.0, 10.0), h0mll, aw);
    histogram_manager h2nbjet (new TH1F("h2nbjet","", 8, 0.0, 8.0), h0mll, aw);
@@ -366,7 +378,7 @@ int main(int argc, char *argv[])
    histogram_manager h3mll   (new TH1F("h3mll","",100,0.0,200.0), h0mll, aw);
    histogram_manager h3mjj   (new TH1F("h3mjj","",  100,0.0,200.0), h0mll, aw);
    histogram_manager h3mjl   (new TH1F("h3mjl","",  100,0.0,200.0), h0mll, aw);
-   histogram_manager h3mjjll (new TH1F("h3mjjll","",100,0.0,200.0), h0mll, aw);
+   histogram_manager h3mjjll (new TH1F("h3mjjll","",100,0.0,500.0), h0mll, aw);
    histogram_manager h3met   (new TH1F("h3met","",  100,0.0, met_upper), h0mll, aw);
    histogram_manager h3njet  (new TH1F("h3njet","", 8, 2.0, 10.0), h0mll, aw);
    histogram_manager h3nbjet (new TH1F("h3nbjet","", 8, 0.0, 8.0), h0mll, aw);
@@ -429,7 +441,7 @@ int main(int argc, char *argv[])
       // prune jet list according to analysis selection:
       for (int i=0; i<data.jet_pt->size(); i++){
          int veto = 0;
-         if (data.jet_pt->at(i) < 20.0) veto = 1;
+         if (data.jet_pt->at(i) < 15.0) veto = 1;
          if (fabs(data.jet_eta->at(i)) > 2.5) veto = 1;         
          if (veto) {
             data.erase_jet(i); 
@@ -449,13 +461,9 @@ int main(int argc, char *argv[])
       //preselection cuts:
       if (data.jet_pt->size() < 2) continue;
       if (data.nmuon + data.nelec > 2) continue;
-
+      
       cutflow.increment(0, data.sample, data.weight);      
 
-      //if (nbtag > 0) continue;
-      //if (nbtag < 1) continue;
-
-      //if (data.jet_pt->size() > 2) continue;
 
       // Here we smear the MET to account for pile-up effects:
       vector<double> met;
@@ -480,7 +488,7 @@ int main(int argc, char *argv[])
       
       double mjj, mjl, mjjll;
       int i,j;      
-      best_mjj(data, mjj, mjjll, i, j);
+      best_mjj(30.0, data, mjj, mjjll, i, j);
       best_mjl(data, mjl, i, j);
 
 
@@ -504,18 +512,18 @@ int main(int argc, char *argv[])
       h0mjj.Fill(data.sample, mjj, data.weight);      
       h0mjl.Fill(data.sample, mjl, data.weight);      
       h0mjjll.Fill(data.sample, mjjll, data.weight);      
+      h0ht.Fill(data.sample, data.ht, data.weight);      
 
-      // ORIG / TIGHT
-      if (data.mll < 50) continue;
-      if (data.mll > 65) continue;
+      if (data.mll <= 20) continue;
 
-      // LOOSE:
-      //if (data.mll < 40) continue;
-      //if (data.mll > 70) continue;
+      // onshell Z->ll requirement:
+      if (data.mll < 76) continue;
+      if (data.mll > 100) continue;
+
+      // offshell Z->ll requirement:
+      //if (data.mll > 76) continue;
 
       htestx.Fill(data.sample, mjl, data.weight);
-
-
       cutflow.increment(1, data.sample, data.weight);
 
       h1njet.Fill(data.sample, data.jet_pt->size(), data.weight);
@@ -525,12 +533,9 @@ int main(int argc, char *argv[])
       h1mjl.Fill(data.sample, mjl, data.weight);      
       h1mjjll.Fill(data.sample, mjjll, data.weight);      
 
-      // ORIG
-      if (mjj < 45) continue;
-      if (mjj > 75) continue;
 
-      //if (mjj < 40) continue;
-      //if (mjj > 80) continue;
+      if (mjj > 120) continue;
+      if (mjjll > 200.0) continue;
 
       cutflow.increment(2, data.sample, data.weight);
 
@@ -541,17 +546,8 @@ int main(int argc, char *argv[])
       h2mjl.Fill(data.sample, mjl, data.weight);      
       h2mjjll.Fill(data.sample, mjjll, data.weight);      
 
-      // ORIG/TIGHT:
-      if (mjjll > 110) continue;
-      // LOOSE:
-      //if (mjjll > 140) continue;
-
-      // MJL CUT:
-      // ORIG/TIGHT:
-      if (mjl > 60) continue;      
-      // LOOSE:
-      //if (mjl > 80) continue;
-
+      
+      if (mjl > 80.0) continue;
       cutflow.increment(3, data.sample, data.weight);
 
       h3njet.Fill(data.sample, data.jet_pt->size(), data.weight);
@@ -574,7 +570,7 @@ int main(int argc, char *argv[])
          if (data.sample == 23) hfit_sig23.Fill(met[i], met_weight);         
          if (data.sample == 24) hfit_sig24.Fill(met[i], met_weight);         
 
-	 if (met[i] > met_cut)
+	 if (met[i] > met_cut)	 
 	   cutflow.increment(4, data.sample, met_weight);
       }
       

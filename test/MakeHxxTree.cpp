@@ -40,8 +40,11 @@ void usage(){
    cout << " --lumi=<l>          (14)    set weight for lumi <l> [fb^-1]\n";
    cout << " --xsec=<x>          (0)     set weight for xsec <x> [fb]\n";
    cout << " --maxevent=<n>      (0)     if greater than zero, write only <n> events.\n";
+   cout << " --mllcut                    require non-zero mll (saves space).\n";
    exit(0);
 }
+
+int compare_part(GenParticle * g1, GenParticle * g2){ return (g1->PT > g2->PT); }
 
 int main(int argc, char *argv[])
 {
@@ -58,6 +61,8 @@ int main(int argc, char *argv[])
    koptions options(argc, argv);
    
    //check for the --help option:
+   int mllcut = options.find("--mllcut"); 
+
    if ( options.find("--help") ) { usage(); }
    options.set("--seed=", seed);   
    if (seed > 0) rng.SetSeed(seed);
@@ -91,14 +96,16 @@ int main(int argc, char *argv[])
    ExRootTreeReader *treeReader = new ExRootTreeReader(&chain);
    Long64_t numberOfEntries = treeReader->GetEntries();
    if (numberOfEntries == 0) { cout << "Zero entries...\n"; return 0; }
-   double Ngen = numberOfEntries;
    if ((maxevent > 0) && (maxevent < numberOfEntries)) numberOfEntries = maxevent;
+   double Ngen = numberOfEntries;
 
    // Get pointers to branches used in this analysis
    TClonesArray *branchJet      = treeReader->UseBranch("Jet");
    TClonesArray *branchElec     = treeReader->UseBranch("Electron");
    TClonesArray *branchMuon     = treeReader->UseBranch("Muon");
    TClonesArray *branchMET      = treeReader->UseBranch("MissingET");  
+   TClonesArray *branchHt       = treeReader->UseBranch("ScalarHT");  
+   TClonesArray *branchGen      = treeReader->UseBranch("Particle");  
 
    // calculate appropriate weight:
    if (xsec > 0.0){
@@ -119,8 +126,8 @@ int main(int argc, char *argv[])
    TFile * file = new TFile(outfile.c_str(), "RECREATE");
    TTree * tree = new TTree("hxxtree", "");
    data.WriteTree(tree);
-
-  
+   
+   double tot_wgt = 0.0;
    int count = 0;
    int nupdate = numberOfEntries / 20;
    if (nupdate < 1) nupdate=1;
@@ -169,12 +176,15 @@ int main(int argc, char *argv[])
          if (branchElec->GetEntries() > 1) {
             Electron * elec1 = (Electron*) branchElec->At(0);
             Electron * elec2 = (Electron*) branchElec->At(1);
-            data.l2_pt = elec1->PT;
-            data.l2_eta = elec1->Eta;
-            data.l2_phi = elec1->Phi;
+            data.l2_pt = elec2->PT;
+            data.l2_eta = elec2->Eta;
+            data.l2_phi = elec2->Phi;
             data.mll = ((elec1->P4()) + (elec2->P4())).M(); 
          }
       }
+
+
+      if (mllcut && (data.mll <= 0.0)) continue;
 
       int nJet = branchJet->GetEntries();
       for (int i=0; i<nJet; i++){
@@ -193,12 +203,69 @@ int main(int argc, char *argv[])
          data.nopu_met_phi = met->Phi;
       }
 
+      if (branchHt->GetEntries() > 0) {
+         ScalarHT * ht = (ScalarHT *) branchHt->At(0);
+         data.ht = ht->HT;
+      }
+
+      // Sort Gen Muons and Electrons:
+      std::vector<GenParticle *> genLept;
+      int npart = branchGen->GetEntries();
+      for (int i=0; i<npart; i++){
+	GenParticle * part = (GenParticle*) branchGen->At(i);
+	int aPID = abs(part->PID);
+	if (part->Status!=1) continue;
+	if (part->PT < 1.0) continue;
+	if (part->D1 != -1) { cout << "ERROR DETECTED!\n"; }
+
+	if (aPID == 11){ genLept.push_back(part); }     
+	if (aPID == 13){ genLept.push_back(part); }
+      }
+      sort(genLept.begin(), genLept.end(), compare_part);
+
+
+      if (genLept.size() > 0) {
+	GenParticle * lept1 = genLept.at(0);
+	data.gl1_pt  = lept1->PT;
+	data.gl1_eta = lept1->Eta;
+	data.gl1_phi = lept1->Phi;
+      }
+      if (genLept.size() > 1) {
+	GenParticle * lept1 = genLept.at(0);
+	GenParticle * lept2 = genLept.at(1);
+	data.gl2_pt  = lept2->PT;
+	data.gl2_eta = lept2->Eta;
+	data.gl2_phi = lept2->Phi;
+	data.gmll = ((lept1->P4()) + (lept2->P4())).M(); 
+      }
+
+      if (0) {
+	int n = genLept.size();
+	if (n > 2) n=2;
+	cout << "\n\nGenerated Leptons:\n";
+	for (int i=0; i<n; i++) { cout << "Lept:  " << genLept[i]->PT << "\n"; }
+	int nmuon = branchMuon->GetEntries();
+	cout << "Reco Muon:\n";
+	for (int i=0; i<nmuon; i++){
+	  Muon * mu = (Muon*) branchMuon->At(i);
+	  cout << "PT:  " << mu->PT << "\n";
+	}
+	
+	int nelec = branchElec->GetEntries();
+	cout << "Reco Electron:\n";
+	for (int i=0; i<nelec; i++){
+	  Electron * mu = (Electron*) branchElec->At(i);
+	  cout << "PT:  " << mu->PT << "\n";
+	}
+      }
+
+      tot_wgt += data.weight;
       tree->Fill();
    }
    cout << "\n";
 
    cout << "SUMMARY:  wrote " << tree->GetEntries() << " to analysis tree from " << count << " events considered.\n";
-
+   cout << "SUMMARY:  total weight: " << tot_wgt << "\n";
    file->cd();
    tree->Write();
    file->Close();   

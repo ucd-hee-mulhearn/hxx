@@ -1,4 +1,6 @@
 
+source SETUP
+
 ./jobs/sig_job.csh 10000 4000    1 run_8tev_mchi1
 ./jobs/sig_job.csh 10000 4000   10 run_8tev_mchi10
 ./jobs/sig_job.csh 10000 4000  100 run_8tev_mchi100

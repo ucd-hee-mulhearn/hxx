@@ -1,0 +1,4 @@
+
+source SETUP
+
+./jobs/bkg_job.csh 100 4000 test_8tev

@@ -10,8 +10,6 @@ hostname
 echo "launch signal job for ebeam=$EBEAM nevents=$NEVENTS and mchi=$MCHI" 
 echo "run name is $RUNNAME"
 
-source SETUP
-
 cp Cards/run_card_default.dat Cards/run_card.dat
 
 # set nevents and beam energy
@@ -33,4 +31,4 @@ echo "0" >> me.cmd
 echo "" >> me.cmd
 ./bin/madevent me.cmd
 
-echo "DONE with signal job for $RUNNAME"
+echo "DONE with signal job $RUNNAME"

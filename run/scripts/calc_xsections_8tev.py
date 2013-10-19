@@ -100,7 +100,7 @@ SIGMA_HXX = 1E5
 #ZH->llbb
 #Fakes,
 
-print "Sigma x BR in fb at at 14 TeV"
+print "Sigma x BR in fb at at 8 TeV"
 print ""
 print "Backgrounds:  "
 print ""
@@ -111,19 +111,24 @@ print ""
 print "tt   -> lvlvbb ........................", SIGMA_TT * BR_W_LV *  BR_W_LV
 print ""
 print "ZW   -> lljj   ........................", SIGMA_ZW   * BR_Z_LL * BR_W_JJ
-print "ZZ   -> lljj   ........................", SIGMA_ZZ   * BR_Z_LL * BR_Z_JJ_NOT_BB * 2
+print "ZZ   -> lljj   (not bb)................", SIGMA_ZZ   * BR_Z_LL * BR_Z_JJ_NOT_BB * 2
 print "ZZ   -> llbb   ........................", SIGMA_ZZ   * BR_Z_LL * BR_Z_BB * 2
+print "ZZ   -> lljj   ........................", SIGMA_ZZ   * BR_Z_LL * BR_Z_JJ * 2
+
 print ""
 print "WWjj -> lvlvjj ........................", SIGMA_WWJJ * BR_W_LV * BR_W_LV
 print ""
-print "H -> ZZ -> lljj .......................", SIGMA_H * BR_H_ZZ * BR_Z_LL * BR_Z_JJ_NOT_BB * 2
+print "H -> ZZ -> lljj (not bb)...............", SIGMA_H * BR_H_ZZ * BR_Z_LL * BR_Z_JJ_NOT_BB * 2
 print "H -> ZZ -> llbb .......................", SIGMA_H * BR_H_ZZ * BR_Z_LL * BR_Z_BB * 2
+print "H -> ZZ -> lljj .......................", SIGMA_H * BR_H_ZZ * BR_Z_LL * BR_Z_JJ * 2
+
 print ""
-print "ZH, Z->VV, H -> ZZ -> lljj ............", SIGMA_ZH * BR_H_ZZ * BR_Z_VV * BR_Z_LL * BR_Z_JJ_NOT_BB * 2
+print "ZH, Z->VV, H -> ZZ -> lljj (not bb)....", SIGMA_ZH * BR_H_ZZ * BR_Z_VV * BR_Z_LL * BR_Z_JJ_NOT_BB * 2
 print "ZH, Z->VV, H -> ZZ -> llbb ............", SIGMA_ZH * BR_H_ZZ * BR_Z_VV * BR_Z_LL * BR_Z_BB * 2
+print "ZH, Z->VV, H -> ZZ -> lljj ............", SIGMA_ZH * BR_H_ZZ * BR_Z_VV * BR_Z_LL * BR_Z_JJ * 2
+
 print ""
-print "WH, W->LV, H -> ZZ -> lljj ............", SIGMA_WH * BR_H_ZZ * BR_W_LV * BR_Z_LL * BR_Z_JJ_NOT_BB * 2
-print "WH, W->LV, H -> ZZ -> llbb ............", SIGMA_WH * BR_H_ZZ * BR_W_LV * BR_Z_LL * BR_Z_BB * 2
+print "WH, W->JJ, H -> ZZ -> llvv ............", SIGMA_WH * BR_H_ZZ * BR_W_JJ * BR_Z_LL * BR_Z_VV * 2
 print ""
 print "Signal:  "
 print ""

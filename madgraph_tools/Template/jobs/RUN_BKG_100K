@@ -1,0 +1,8 @@
+
+source SETUP
+
+./jobs/bkg_job.csh 50000 4000 run_8tev
+./jobs/bkg_job.csh 50000 7000 run_14tev
+
+./jobs/bkg_job.csh 50000 4000 run_8tev
+./jobs/bkg_job.csh 50000 7000 run_14tev

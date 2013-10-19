@@ -32,10 +32,22 @@ void hxx_tree::WriteTree(TTree * tree){
    tree->Branch("l2_phi", &l2_phi );
    tree->Branch("mll",    &mll    );
 
+   // generator-level variables:
+   tree->Branch("gl1_pt",  &gl1_pt  );
+   tree->Branch("gl1_eta", &gl1_eta );
+   tree->Branch("gl1_phi", &gl1_phi );
+   tree->Branch("gl2_pt",  &gl2_pt  );
+   tree->Branch("gl2_eta", &gl2_eta );
+   tree->Branch("gl2_phi", &gl2_phi );
+   tree->Branch("gmll",    &gmll    );
+
+
    // met variables:
    tree->Branch("nopu_met",     &nopu_met);
    tree->Branch("nopu_met_phi", &nopu_met_phi);
    
+   tree->Branch("ht",     &ht);
+
    // jets:
    tree->Branch("jet_pt",     jet_pt);
    tree->Branch("jet_eta",    jet_eta);
@@ -65,9 +77,20 @@ void hxx_tree::ReadTree(TTree * tree){
    tree->SetBranchAddress("l2_phi", &l2_phi   );
    tree->SetBranchAddress("mll",    &mll      );
 
+   // generator-level variables:
+   tree->SetBranchAddress("gl1_pt",  &gl1_pt    );
+   tree->SetBranchAddress("gl1_eta", &gl1_eta   );
+   tree->SetBranchAddress("gl1_phi", &gl1_phi   );
+   tree->SetBranchAddress("gl2_pt",  &gl2_pt    );
+   tree->SetBranchAddress("gl2_eta", &gl2_eta   );
+   tree->SetBranchAddress("gl2_phi", &gl2_phi   );
+   tree->SetBranchAddress("gmll",    &gmll      );
+
    // met variables:
    tree->SetBranchAddress("nopu_met",     &nopu_met     );
    tree->SetBranchAddress("nopu_met_phi", &nopu_met_phi );
+
+   tree->SetBranchAddress("ht",           &ht);
 
    // ROOT makes this complicated...
    delete jet_pt;     jet_pt     = NULL;
@@ -106,8 +129,16 @@ void hxx_tree::Clear(){
    l2_eta   = 0;
    l2_phi   = 0;
    mll      = 0;
+   gl1_pt   = 0;
+   gl1_eta  = 0;
+   gl1_phi  = 0;
+   gl2_pt   = 0;
+   gl2_eta  = 0;
+   gl2_phi  = 0;
+   gmll     = 0;
    nopu_met = 0;
    nopu_met_phi = 0;
+   ht = 0;
    jet_pt ->clear();
    jet_eta->clear();
    jet_phi->clear();

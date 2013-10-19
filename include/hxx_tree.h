@@ -28,6 +28,15 @@ public:
    double l2_phi;
    double mll;
 
+   // generator-level variables
+   double gl1_pt;
+   double gl1_eta;
+   double gl1_phi;
+   double gl2_pt;
+   double gl2_eta;
+   double gl2_phi;
+   double gmll;
+
    // jet variables: (these have to be pointers because ... you know ... ROOT.)
    std::vector<double>  * jet_pt;
    std::vector<double>  * jet_eta;
@@ -39,6 +48,9 @@ public:
 
    // met variables:
    double nopu_met, nopu_met_phi;
+
+   // scalar ht:
+   double ht;
 
    // Read/Write data in this class to a TTree
    // Note:  due to ROOT silliness, you must call ReadTree *before* WriteTree if doing both...
