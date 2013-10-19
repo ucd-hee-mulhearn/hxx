@@ -1,7 +1,7 @@
 source COMPILE
 
 # set to zero for all, non-zero to put cap on number output
-setenv MAXEVENTA 100000 # not used yet ... for stat limited channels in final plost ...
+setenv MAXEVENTA 1000000 # not used yet ... for stat limited channels in final plost ...
 setenv MAXEVENTB 100000
 
 rm data/analysis/8tev/*.root   ######  DELETING FILES HERE #####
@@ -11,7 +11,7 @@ rm data/analysis/8tev/*.root   ######  DELETING FILES HERE #####
 ./bin/MakeHxxTree --maxevent=$MAXEVENTB --sample=8 --lumi=20 --xsec=2553000    data/analysis/8tev/wjjj.root \
 data/delphes_3day/wjjj/run_*_8TeV/tag_*_delphes_events.root
 
-./bin/MakeHxxTree --mllcut --maxevent=$MAXEVENTB --sample=1 --lumi=20 --xsec=206176    data/analysis/8tev/zjj_mll_gt_80.root \
+./bin/MakeHxxTree --mllcut --maxevent=$MAXEVENTA --sample=1 --lumi=20 --xsec=206176    data/analysis/8tev/zjj_mll_gt_80.root \
 data/delphes/zjj/run_8tev/tag_*_delphes_events.root
 
 #./bin/MakeHxxTree --mllcut --maxevent=$MAXEVENTB --sample=1 --lumi=20 --xsec=145020    data/analysis/8tev/zjj_mll_gt_80.root \
@@ -30,7 +30,7 @@ data/delphes_3day/wwjj_lvlvjj/run_100K_8TeV/tag_2_delphes_events.root \
 data/delphes_3day/wwjj_lvlvjj/run_100K_8TeV/tag_3_delphes_events.root \
 data/delphes_3day/wwjj_lvlvjj/run_100K_8TeV/tag_4_delphes_events.root
 
-./bin/MakeHxxTree --mllcut --maxevent=$MAXEVENTB --sample=4 --lumi=20 --xsec=6298      data/analysis/8tev/tt.root \
+./bin/MakeHxxTree --mllcut --maxevent=$MAXEVENTA --sample=4 --lumi=20 --xsec=6298      data/analysis/8tev/tt.root \
 data/delphes_3day/tt/run_100K_8TeV/tag_*_delphes_events.root
 
 ./bin/MakeHxxTree --mllcut --maxevent=$MAXEVENTB --sample=5 --lumi=20 --xsec=31.31    data/analysis/8tev/h_zz_lljj.root \
