@@ -16,6 +16,8 @@ enum {MYRED2     = kRed-2};
 enum {FILL1 = 3004, FILL2 = 3013, FILL3 = 3005, FILL4=3014, FILL4 = 3007}; 
 enum {FILLSIG1 = 3002, FILLSIG2 = 3003};
 
+enum {LSOLID=1, LDASHED=2};
+
 
 TH1F * AddHist(THStack *stack, TLegend * leg,  TFile *f, const char * name, const char * sample, const char * legsamp, int style, int color){
    char full_name[200];
@@ -48,18 +50,19 @@ THStack * GetBkgStack(TFile *f, const char * name, const char * xtitle, TLegend 
    stack->SetHistogram(h_base);
 
    if (mode == 0){
-      AddHist(stack, leg, f,name,"wh",    "WH",     FILL1, MYBLUE1);
-      AddHist(stack, leg, f,name,"zh",    "ZH",     FILL4, MYMAGENTA1);
-      AddHist(stack, leg, f,name,"ww",    "WWjj",   FILL3, MYGREEN2);
-      AddHist(stack, leg, f,name,"hzz",   "H(ZZ)",  FILL3, MYORANGE1);
-      AddHist(stack, leg, f,name,"zz_zw", "ZZ,ZW",  FILL2, MYGREEN1);
-      AddHist(stack, leg, f,name,"tt",    "top",    FILL2, MYCYAN2);
+      AddHist(stack, leg, f,name,"wh",    "WH",     FILL4, MYMAGENTA2);
+      AddHist(stack, leg, f,name,"zh",    "ZH",     FILL3, MYGREEN2);
+      AddHist(stack, leg, f,name,"hzz",   "H(ZZ)",  FILL1, MYORANGE1);
+      AddHist(stack, leg, f,name,"zz_zw", "ZZ,ZW",  FILL4, MYBLUE1);
+      AddHist(stack, leg, f,name,"ww",    "WWjj",   FILL2, MYCYAN2);
+      AddHist(stack, leg, f,name,"wjjj",  "W+jets", FILL2, MYGREEN1);   
+      AddHist(stack, leg, f,name,"tt",    "top",    FILL3, MYMAGENTA1);
       AddHist(stack, leg, f,name,"zjj",   "Zjj",    FILL1, MYCYAN1);   
    }
    return stack;
 }
 
-TH1F * GetSigHist(TFile *f, const char * name, const char * tag, int color, TLegend * leg, const char * legtag){
+TH1F * GetSigHist(TFile *f, const char * name, const char * tag, int color, int lstyle, TLegend * leg, const char * legtag){
    char full_name[200];
 
    sprintf(full_name, "%s_%s", name, tag);
@@ -68,6 +71,7 @@ TH1F * GetSigHist(TFile *f, const char * name, const char * tag, int color, TLeg
    h->SetFillStyle(0);
    h->SetFillColor(color);
    h->SetLineColor(color);   
+   h->SetLineStyle(lstyle);   
    if (leg) { leg->AddEntry(h, legtag, "l"); }  
 
    return h;
@@ -76,45 +80,36 @@ TH1F * GetSigHist(TFile *f, const char * name, const char * tag, int color, TLeg
 mkplots(){
    gStyle->SetOptStat(0);
 
-   double basemin = 0.01;
+   double basemin = 0.001;
 
-   TFile * f = new TFile("plots/latest.root");
+   TFile * f = new TFile("latest.root");
    f->ls();
-
-   TCanvas * ctest = new TCanvas("ctest", "");
-   TLegend * legtest = new TLegend(0.7, 0.65, 0.90, 0.90);
-   ctest->SetLogy();
-   ctest->cd();
-   THStack * htest_bkg = GetBkgStack(f, "htestx", "test variable [GeV]", legtest);
-   TH1F    * htest_sig = GetSigHist(f, "htestx", "hxx1", MYRED1, legtest, "HXX (1 GeV)");
-   htest_bkg->SetMinimum(basemin);
-   htest_bkg->Draw();
-   htest_sig->Draw("HSAME");
-   legtest->Draw();
 
    TCanvas * c1 = new TCanvas("c1", "");
    TLegend * leg1 = new TLegend(0.7, 0.65, 0.90, 0.90);
    c1->SetLogy();
    c1->cd();
    THStack * hmll_bkg = GetBkgStack(f, "h0mll", "dilepton invariant mass [GeV]", leg1);
-   TH1F    * hmll_sig = GetSigHist(f, "h0mll", "hxx1", MYRED1, leg1, "HXX (1 GeV)");
-   hmll_bkg->SetMinimum(basemin*100);
+   TH1F    * hmll_sig1 = GetSigHist(f, "h0mll", "hxx1", MYRED1, LSOLID, leg1, "HXX (1 GeV)");
+   TH1F    * hmll_sig2 = GetSigHist(f, "h0mll", "hxx1000", MYRED1, LDASHED, leg1, "HXX (1000 GeV)");
+   hmll_bkg->SetMinimum(basemin);
    hmll_bkg->Draw();
-   hmll_sig->Draw("HSAME");
+   hmll_sig1->Draw("HSAME");
+   hmll_sig2->Draw("HSAME");
    leg1->Draw();
-   c1->SaveAs("mulhearn14/mll.png");
-   c1->SaveAs("mulhearn14/mll.eps");
-   c1->SaveAs("mulhearn14/mll.pdf");
+
 
    TCanvas * c2 = new TCanvas("c2", "");
    TLegend * leg2 = new TLegend(0.7, 0.65, 0.90, 0.90);
    c2->SetLogy();
    c2->cd();
-   THStack * hmjj_bkg = GetBkgStack(f, "h1mjj", "best dijet mass [GeV]", leg2);
-   TH1F    * hmll_sig = GetSigHist (f, "h1mjj", "hxx1", MYRED1, leg1, "HXX (1 GeV)");
+   THStack * hmjj_bkg = GetBkgStack(f, "h0mjj", "best dijet mass [GeV]", leg2);
+   TH1F    * hmjj_sig1 = GetSigHist (f, "h0mjj", "hxx1", MYRED1, LSOLID, leg2, "HXX (1 GeV)");
+   TH1F    * hmjj_sig2 = GetSigHist (f, "h0mjj", "hxx1000", MYRED1, LDASHED, leg2, "HXX (1000 GeV)");
    hmjj_bkg->SetMinimum(basemin);
    hmjj_bkg->Draw();
-   hmll_sig->Draw("HSAME");
+   hmjj_sig1->Draw("HSAME");
+   hmjj_sig2->Draw("HSAME");
    leg2->Draw();
 
    TCanvas * c3 = new TCanvas("c3", "");
@@ -122,38 +117,93 @@ mkplots(){
    c3->SetLogy();
    c3->cd();
    THStack * hmjjll_bkg = GetBkgStack(f, "h0mjjll", "M(jjll) [GeV]", leg3);
-   TH1F    * hmjjll_sig = GetSigHist   (f, "h0mjjll", "hxx1", MYRED1, leg1, "HXX (1 GeV)");
+   TH1F    * hmjjll_sig1 = GetSigHist   (f, "h0mjjll", "hxx1", MYRED1, LSOLID, leg3, "HXX (1 GeV)");
+   TH1F    * hmjjll_sig2 = GetSigHist (f, "h0mjjll", "hxx100", MYRED1, LDASHED, leg3, "HXX (100 GeV)");
    hmjjll_bkg->SetMinimum(basemin);
    hmjjll_bkg->Draw();
-   hmjjll_sig->Draw("HSAME");   
+   hmjjll_sig1->Draw("HSAME");   
+   hmjjll_sig2->Draw("HSAME");   
    leg3->Draw();
-   c3->SaveAs("mulhearn14/mlljj.png");
-   c3->SaveAs("mulhearn14/mlljj.pdf");
-   c3->SaveAs("mulhearn14/mlljj.eps");
-
 
    TCanvas * c4 = new TCanvas("c4", "");
    TLegend * leg4 = new TLegend(0.7, 0.65, 0.90, 0.90);
    c4->SetLogy();
    c4->cd();
-   THStack * hmet_bkg = GetBkgStack(f, "h3met", "MET [GeV]", leg4);
-   TH1F    * hmet_sig = GetSigHist(f, "h3met", "hxx1", MYRED1, leg4, "HXX (1 GeV)");
+   THStack * hmet_bkg = GetBkgStack(f, "h1met", "MET [GeV]", leg4);
+   TH1F    * hmet_sig1 = GetSigHist(f, "h1met", "hxx1", MYRED1, LSOLID, leg4, "HXX (1 GeV)");
+   TH1F    * hmet_sig2 = GetSigHist (f, "h1met", "hxx1000", MYRED1, LDASHED, leg4, "HXX (1000 GeV)");
    hmet_bkg->SetMinimum(basemin);
    hmet_bkg->Draw();
-   hmet_sig->Draw("HSAME");
+   hmet_sig1->Draw("HSAME");
+   hmet_sig2->Draw("HSAME");
    leg4->Draw();
-   c4->SaveAs("mulhearn14/met.png");
-   c4->SaveAs("mulhearn14/met.pdf");
-   c4->SaveAs("mulhearn14/met.eps");
 
-   continue;
+   TCanvas * c5 = new TCanvas("c5", "");
+   TLegend * leg5 = new TLegend(0.7, 0.65, 0.90, 0.90);
+   c5->SetLogy();
+   c5->cd();
+   THStack * hmjl_bkg = GetBkgStack(f, "h0mjl", "M(jl) [GeV]", leg5);
+   TH1F    * hmjl_sig1 = GetSigHist (f, "h0mjl", "hxx1", MYRED1, LSOLID, leg5, "HXX (1 GeV)");
+   TH1F    * hmjl_sig2 = GetSigHist (f, "h0mjl", "hxx1000", MYRED1, LDASHED, leg5, "HXX (1000 GeV)");
+   hmjl_bkg->SetMinimum(basemin);
+   hmjl_bkg->Draw();
+   hmjl_sig1->Draw("HSAME");   
+   hmjl_sig2->Draw("HSAME");   
+   leg5->Draw();
+
+   TCanvas * ctest = new TCanvas("ctest", "");
+   TLegend * legtest = new TLegend(0.7, 0.65, 0.90, 0.90);
+   ctest->SetLogy();
+   ctest->cd();
+   THStack * htest_bkg  = GetBkgStack(f, "h0jdphi", "test variable [GeV]", legtest);
+   TH1F    * htest_sig1 = GetSigHist (f, "h0jdphi", "hxx1", MYRED1, LSOLID, legtest, "HXX (1 GeV)");
+   TH1F    * htest_sig2 = GetSigHist (f, "h0jdphi", "hxx1000", MYRED1, LDASHED, legtest, "HXX (1000 GeV)");
+   htest_bkg->SetMinimum(basemin);
+   htest_bkg->Draw();
+   htest_sig1->Draw("HSAME");
+   htest_sig2->Draw("HSAME");
+   legtest->Draw();
+
+   return;
+
+   TCanvas * ctest = new TCanvas("ctest", "");
+   TLegend * legtest = new TLegend(0.7, 0.65, 0.90, 0.90);
+   ctest->SetLogy();
+   ctest->cd();
+   THStack * htest_bkg  = GetBkgStack(f, "h0j2pt", "test variable [GeV]", legtest);
+   TH1F    * htest_sig1 = GetSigHist (f, "h0j2pt", "hxx1", MYRED1, LSOLID, legtest, "HXX (1 GeV)");
+   TH1F    * htest_sig2 = GetSigHist (f, "h0j2pt", "hxx1000", MYRED1, LDASHED, legtest, "HXX (1000 GeV)");
+   htest_bkg->SetMinimum(basemin);
+   htest_bkg->Draw();
+   htest_sig1->Draw("HSAME");
+   htest_sig2->Draw("HSAME");
+   legtest->Draw();
+
+
+
+   
+   
+
+   TCanvas * ctest = new TCanvas("ctest", "");
+   TLegend * legtest = new TLegend(0.7, 0.65, 0.90, 0.90);
+   ctest->SetLogy();
+   ctest->cd();
+   THStack * htest_bkg  = GetBkgStack(f, "htestx", "test variable [GeV]", legtest);
+   TH1F    * htest_sig1 = GetSigHist (f, "htestx", "hxx1", MYRED1, LSOLID, legtest, "HXX (1 GeV)");
+   TH1F    * htest_sig2 = GetSigHist (f, "htestx", "hxx1000", MYRED1, LDASHED, legtest, "HXX (1000 GeV)");
+   htest_bkg->SetMinimum(basemin);
+   htest_bkg->Draw();
+   htest_sig1->Draw("HSAME");
+   htest_sig2->Draw("HSAME");
+   legtest->Draw();
+
 
    TCanvas * c5 = new TCanvas("c5", "");
    TLegend * leg5 = new TLegend(0.7, 0.65, 0.90, 0.90);
    c5->SetLogy();
    c5->cd();
    THStack * hnjet_bkg = GetBkgStack(f, "h1njet", "Num Jet", leg5);
-   TH1F    * hnjet_sig = GetSigHist(f, "h1njet", "hxx1", MYRED1, leg5, "HXX (1 GeV)");
+   TH1F    * hnjet_sig = GetSigHist(f, "h1njet", "hxx1", MYRED1, LSOLID, leg5, "HXX (1 GeV)");
    hnjet_bkg->SetMinimum(basemin);
    hnjet_bkg->Draw();
    hnjet_sig->Draw("HSAME");
@@ -164,7 +214,7 @@ mkplots(){
    c6->SetLogy();
    c6->cd();
    THStack * hnbjet_bkg = GetBkgStack(f, "h0nbjet", "Num B-Tags", leg6);
-   TH1F    * hnbjet_sig = GetSigHist(f, "h0nbjet", "hxx1", MYRED1, leg6, "HXX (1 GeV)");
+   TH1F    * hnbjet_sig = GetSigHist(f, "h0nbjet", "hxx1", MYRED1, LSOLID, leg6, "HXX (1 GeV)");
    hnbjet_bkg->SetMinimum(basemin);
    hnbjet_bkg->Draw();
    hnbjet_sig->Draw("HSAME");
