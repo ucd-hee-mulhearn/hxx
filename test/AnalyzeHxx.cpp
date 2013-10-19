@@ -194,7 +194,7 @@ void best_mjl(hxx_tree & data, double & mjl){
 double sensitivity(TH1F * hsig, TH1F * hbkg, double sigtot){
   int n = hsig->GetNbinsX() + 2;
   double best_sens = 0.0;
-
+  int ibest = 0;
   for (int i=0; i<n; i++){
     double s = 0;
     double b = 0;
@@ -204,8 +204,12 @@ double sensitivity(TH1F * hsig, TH1F * hbkg, double sigtot){
     }    
     double sens = 0;
     if (b > 0.0) sens = s / sqrt(b);
-    if (sens > best_sens) best_sens = sens;
+    if (sens > best_sens) { 
+       best_sens = sens;
+       ibest = i;
+    }
   }
+  cout << "Best MET cut at:  " << hsig->GetBinLowEdge(ibest) << "\n";
   return best_sens;
 }
 
