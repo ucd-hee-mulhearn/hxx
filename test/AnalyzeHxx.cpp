@@ -407,6 +407,11 @@ int main(int argc, char *argv[])
       if (count % nupdate == 0) { cout << "."; cout.flush(); }
       
       tree->GetEntry(entry);
+
+      int num_smear_event = num_smear;
+      if (data.sample == 1) {
+	num_smear_event = num_smear * 100;
+      }
       
 
       // First, apply W+jets fake rate if applicable:
@@ -467,12 +472,12 @@ int main(int argc, char *argv[])
       vector<double> jet_dphi;
 
       // use reduced weight when looping over entire MET vector:
-      double met_weight = (data.weight / (double) num_smear);
+      double met_weight = (data.weight / (double) num_smear_event);
 
       double nopu_metx = data.nopu_met * cos(data.nopu_met_phi);
       double nopu_mety = data.nopu_met * sin(data.nopu_met_phi);
       
-      for (int i=0; i<num_smear; i++){
+      for (int i=0; i<num_smear_event; i++){
          double metx         = nopu_metx + rng.Gaus() * met_smear;
          double mety         = nopu_mety + rng.Gaus() * met_smear;
          double new_met      = sqrt(metx*metx + mety*mety);
