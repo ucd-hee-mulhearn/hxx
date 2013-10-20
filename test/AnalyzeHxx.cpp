@@ -39,10 +39,17 @@ double delta_phi(double phi0, double phi1){
 void kinematic_vars(hxx_tree & data, double & mjj, double & mjjll , 
                     double &dphi_zz, double &zll_phi, double &x, double &y){
    TLorentzVector vl1, vl2, vj1, vj2, zll, zjj, hjjll;
+
+   if (data.jet_pt->size() < 2) { cout << "ERROR:  jet size less than two!"; return; }
+
+   int j2 = data.jet_pt->size() - 1;
+   int j1 = data.jet_pt->size() - 2;
+
+
    vl1.SetPtEtaPhiM(data.l1_pt, data.l1_eta, data.l1_phi,0);
    vl2.SetPtEtaPhiM(data.l2_pt, data.l2_eta, data.l2_phi,0);
-   vj1.SetPtEtaPhiM(data.jet_pt->at(0), data.jet_eta->at(0), data.jet_phi->at(0), 0.0);
-   vj2.SetPtEtaPhiM(data.jet_pt->at(1), data.jet_eta->at(1), data.jet_phi->at(1), 0.0);   
+   vj1.SetPtEtaPhiM(data.jet_pt->at(j1), data.jet_eta->at(j1), data.jet_phi->at(j1), 0.0);
+   vj2.SetPtEtaPhiM(data.jet_pt->at(j2), data.jet_eta->at(j2), data.jet_phi->at(j2), 0.0);   
    zll = vl1 + vl2;
    zjj = vj1 + vj2;   
    hjjll = zll + zjj;
@@ -56,8 +63,11 @@ void kinematic_vars(hxx_tree & data, double & mjj, double & mjjll ,
    // Phi(ll) to compare with phi_met after smearing...
    zll_phi = zll.Phi();
 
-   // for testing new variables...
    x = y = 0.0;
+   // for testing new variables...
+   y = zjj.Pt();
+
+
 }
 
 
@@ -227,11 +237,11 @@ int main(int argc, char *argv[])
 
 
    double lumi = 300;
-   double met_cut = 200.0;
+   double met_cut = 250.0;
 
    if (mode_8tev){
      lumi = 20.0;
-     met_cut = 200;
+     met_cut = 250;
      cout << "INFO:  settings for sqrt(s) = 8 TeV\n";
    } else {
      cout << "INFO:  settings for sqrt(s) = 14 TeV\n";
@@ -266,17 +276,15 @@ int main(int argc, char *argv[])
    histogram_manager h0mll(new TH1F("h0mll","",100,0.0,200.0));
 
    if (pub_plots) {
-     h0mll.add_sample(1,  "_ewk");
+     h0mll.add_sample(1,  "_z");
      h0mll.add_sample(2,  "_h");
-     h0mll.add_sample(3,  "_vh");
+     h0mll.add_sample(3,  "_w");
      h0mll.add_sample(4,  "_top");
-     h0mll.add_sample(5,  "_wjjj");
 
-     cutflow.add_sample_name(1, "Electroweak");
-     cutflow.add_sample_name(2, "H");
-     cutflow.add_sample_name(3, "ZH,WH");
+     cutflow.add_sample_name(1, "Z,ZZ,ZW");
+     cutflow.add_sample_name(2, "Higgs");
+     cutflow.add_sample_name(3, "W,WW");
      cutflow.add_sample_name(4, "tt");
-     cutflow.add_sample_name(5, "W+jets");
 
    } else {
      h0mll.add_sample(1,  "_zjj");
@@ -317,12 +325,12 @@ int main(int argc, char *argv[])
    h0mll.add_auto_write(aw);
 
 
-   TH1F hfit_bkg("sample_1","",  100,0.0,350.0);
-   TH1F hfit_sig20("signal20","",  100,0.0,350.0);
-   TH1F hfit_sig21("signal21","",  100,0.0,350.0);
-   TH1F hfit_sig22("signal22","",  100,0.0,350.0);
-   TH1F hfit_sig23("signal23","",  100,0.0,350.0);
-   TH1F hfit_sig24("signal24","",  100,0.0,350.0);
+   TH1F hfit_bkg("sample_1","",  100,0.0,300.0);
+   TH1F hfit_sig20("signal20","",  100,0.0,300.0);
+   TH1F hfit_sig21("signal21","",  100,0.0,300.0);
+   TH1F hfit_sig22("signal22","",  100,0.0,300.0);
+   TH1F hfit_sig23("signal23","",  100,0.0,300.0);
+   TH1F hfit_sig24("signal24","",  100,0.0,300.0);
 
    int    nsig = 0;
    double wsig = 0.0;
@@ -339,7 +347,7 @@ int main(int argc, char *argv[])
    histogram_manager h0mjj    (new TH1F("h0mjj",   "", 100, 0.0,  500.0),     h0mll, aw);
    histogram_manager h0mjl    (new TH1F("h0mjl",   "", 100, 0.0,  500.0),     h0mll, aw);
    histogram_manager h0mjjll  (new TH1F("h0mjjll", "", 100, 00.0, 1000.0),    h0mll, aw);
-   histogram_manager h0met    (new TH1F("h0met",   "", 100, 0.0,  350.0),     h0mll, aw);
+   histogram_manager h0met    (new TH1F("h0met",   "", 100, 0.0,  300.0),     h0mll, aw);
    histogram_manager h0njet   (new TH1F("h0njet",  "", 8,   2.0,  10.0),      h0mll, aw);
    histogram_manager h0nbjet  (new TH1F("h0nbjet", "", 8,   0.0,  8.0),       h0mll, aw);
    histogram_manager h0jdphi  (new TH1F("h0jdphi", "", 100,   0.0,  3.2),     h0mll, aw);
@@ -363,7 +371,7 @@ int main(int argc, char *argv[])
    histogram_manager h1mjj   (new TH1F("h1mjj",   "",  100, 0.0,  500.0), h0mll, aw);
    histogram_manager h1mjl   (new TH1F("h1mjl",   "",  100, 0.0,  500.0), h0mll, aw);
    histogram_manager h1mjjll (new TH1F("h1mjjll", "",  100, 0.0,  1000.0), h0mll, aw);
-   histogram_manager h1met   (new TH1F("h1met",   "",  100, 0.0,  350.0), h0mll, aw);
+   histogram_manager h1met   (new TH1F("h1met",   "",  100, 0.0,  300.0), h0mll, aw);
    histogram_manager h1njet  (new TH1F("h1njet",  "",  8,   2.0,  10.0), h0mll, aw);
    histogram_manager h1nbjet (new TH1F("h1nbjet", "",  8,   0.0,  8.0), h0mll, aw);
    histogram_manager h1jdphi (new TH1F("h1jdphi", "", 100,   0.0,  3.2), h0mll, aw);
@@ -410,9 +418,9 @@ int main(int argc, char *argv[])
 
 
       int num_smear_event = num_smear;
-      //if (data.sample == 1) {
-      //num_smear_event = num_smear * 100;
-      //}
+      if (data.sample == 1) {
+         num_smear_event = num_smear * 10;
+      }
       //if (data.sample == 4) {
       //num_smear_event = num_smear * 10;
       //}
@@ -431,14 +439,16 @@ int main(int argc, char *argv[])
 	switch (data.sample){
 	case 1: data.sample = 1; break;
 	case 2: data.sample = 1; break;
-	case 3: data.sample = 1; break;
+	case 3: data.sample = 3; break;
 	case 4: data.sample = 4; break;
 	case 5: data.sample = 2; break;
-	case 6: data.sample = 3; break;
-	case 7: data.sample = 3; break;     
-	case 8: data.sample = 5; break;     
+	case 6: data.sample = 2; break;
+	case 7: data.sample = 2; break;     
+	case 8: data.sample = 3; break;     
 	}
       }
+
+
 
       //if (data.l1_pt < 12.0) continue;
       //if (data.l2_pt < 12.0) continue;
@@ -470,6 +480,10 @@ int main(int argc, char *argv[])
       if (data.jet_pt->size() < 2) continue;
       if (data.nmuon + data.nelec > 2) continue;
       
+
+      // checking 2-jet bin:
+      //if (data.jet_pt->size() > 2) continue;
+
       cutflow.increment(0, data.sample, data.weight);      
 
 
@@ -519,6 +533,20 @@ int main(int argc, char *argv[])
       //if (mjjll > 200.0)  continue;
 
 
+      if (data.mll < 80)  continue;
+      if (data.mll > 100) continue;
+      if (dphi_zz > 2.0)  continue;
+      if (mjj > 100.0)  continue;      
+      //if (mjl > 70.0)  continue;
+      // These two cuts are applied in MET loop... 0 = no cut
+      double jet_dphi_cut = 0.0; 
+      double zllmet_dphi_cut = 0.0;      
+      //if (mjjll > 250.0)  continue;
+      
+      //if (data.jet_pt->size() > 3) continue
+         // if (data.jet_pt->at(2) > 50.0) continue;
+      //if (mjl > 70.0) continue;
+
 
 
 
@@ -556,19 +584,6 @@ int main(int argc, char *argv[])
       
       }
 
-      if (data.mll < 85)  continue;
-      if (data.mll > 95) continue;
-      if (dphi_zz > 1.5)  continue;
-      //if (mjl > 65.0)  continue;
-      // These two cuts are applied in MET loop... 0 = no cut
-      double jet_dphi_cut = 0.0; 
-      double zllmet_dphi_cut = 2.5;
-      //if (mjj > 120.0)  continue;
-      if (mjjll < 600.0)  continue;
-
-
-      //if (data.jet_pt->at(1) > 50.0) continue;
-      //if (mjl > 70.0) continue;
 
       
 
@@ -584,11 +599,14 @@ int main(int argc, char *argv[])
       h1mjjll.Fill(data.sample, mjjll, data.weight);      
       
       for (int i=0; i<met.size(); i++) {
+         double tmet =met[i];
+         if (tmet > 299.0) tmet = 299.;
+
          h1jdphi .Fill(data.sample, jet_dphi[i], met_weight);         
          h1dphizllmet .Fill(data.sample, zllmet_dphi[i] , met_weight);
          if (jet_dphi[i]   < jet_dphi_cut) continue; // APPEARS IN TWO PLACES
          if (zllmet_dphi[i] < zllmet_dphi_cut) continue; // APPEARS IN TWO PLACES         
-         h1met.Fill(data.sample, met[i], met_weight);
+         h1met.Fill(data.sample, tmet, met_weight);
 
       }
 
@@ -597,14 +615,17 @@ int main(int argc, char *argv[])
          if (met_weight > 100){
             cout << "WARNING:  large weight at MET stage:  " << met_weight << "\n";  
          }
+         double tmet =met[i];
+         if (tmet > 299.0) tmet = 299.;
+
          if (jet_dphi[i]   < jet_dphi_cut) continue; // APPEARS IN TWO PLACES
          if (zllmet_dphi[i] < zllmet_dphi_cut) continue; // APPEARS IN TWO PLACES         
-         if (data.sample < 20)  hfit_bkg.Fill(met[i], met_weight);
-         if (data.sample == 20) hfit_sig20.Fill(met[i], met_weight);         
-         if (data.sample == 21) hfit_sig21.Fill(met[i], met_weight);         
-         if (data.sample == 22) hfit_sig22.Fill(met[i], met_weight);         
-         if (data.sample == 23) hfit_sig23.Fill(met[i], met_weight);         
-         if (data.sample == 24) hfit_sig24.Fill(met[i], met_weight);         
+         if (data.sample < 20)  hfit_bkg.Fill(tmet, met_weight);
+         if (data.sample == 20) hfit_sig20.Fill(tmet, met_weight);         
+         if (data.sample == 21) hfit_sig21.Fill(tmet, met_weight);         
+         if (data.sample == 22) hfit_sig22.Fill(tmet, met_weight);         
+         if (data.sample == 23) hfit_sig23.Fill(tmet, met_weight);         
+         if (data.sample == 24) hfit_sig24.Fill(tmet, met_weight);         
 
 	 if (met[i] > met_cut)	 
 	   cutflow.increment(4, data.sample, met_weight);
