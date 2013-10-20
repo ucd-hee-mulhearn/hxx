@@ -410,23 +410,16 @@ int main(int argc, char *argv[])
 
 
       int num_smear_event = num_smear;
-      if (data.sample == 1) {
-	num_smear_event = num_smear * 100;
-      }
-      if (data.sample == 4) {
-	num_smear_event = num_smear * 10;
-      }
-      if (data.sample == 3) {
-	num_smear_event = num_smear * 10;
-      }
+      //if (data.sample == 1) {
+      //num_smear_event = num_smear * 100;
+      //}
+      //if (data.sample == 4) {
+      //num_smear_event = num_smear * 10;
+      //}
+      //if (data.sample == 3) {
+      //num_smear_event = num_smear * 10;
+      //}
 
-      if (data.nopu_met > 100) {
-         num_smear_event = num_smear_event * 10;
-      }
-
-
-
-      
 
       // First, apply W+jets fake rate if applicable:
       if (fake_rate > 0.0 && data.sample == 8){
@@ -526,15 +519,6 @@ int main(int argc, char *argv[])
       //if (mjjll > 200.0)  continue;
 
 
-      if (data.mll < 80)  continue;
-      if (data.mll > 100) continue;
-      if (dphi_zz > 2.0)  continue;
-      if (mjl > 65.0)  continue;
-      // These two cuts are applied in MET loop... 0 = no cut
-      double jet_dphi_cut = 0.0; 
-      double zllmet_dphi_cut = 2.0;
-      if (mjj > 120.0)  continue;
-      if (mjjll > 200.0)  continue;
 
 
 
@@ -572,9 +556,15 @@ int main(int argc, char *argv[])
       
       }
 
-
-
-      
+      if (data.mll < 85)  continue;
+      if (data.mll > 95) continue;
+      if (dphi_zz > 1.5)  continue;
+      //if (mjl > 65.0)  continue;
+      // These two cuts are applied in MET loop... 0 = no cut
+      double jet_dphi_cut = 0.0; 
+      double zllmet_dphi_cut = 2.5;
+      //if (mjj > 120.0)  continue;
+      if (mjjll < 600.0)  continue;
 
 
       //if (data.jet_pt->at(1) > 50.0) continue;
