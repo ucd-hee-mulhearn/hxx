@@ -29,7 +29,7 @@ data/delphes_3day/tt/run_100K_14TeV/tag_*_delphes_events.root
 data/delphes/h_lljj/run_14tev/tag_*_delphes_events.root
 
 ./bin/MakeHxxTree --mllcut --maxevent=$MAXEVENTB --sample=6 --lumi=300 --xsec=0.2696  data/analysis/14tev/zh_vvlljj.root \
-data/delphes/zh_vvlljj/run_100K_14TeV/tag_*_delphes_events.root 
+data/delphes/zh_lljjvv/run_14tev/tag_*_delphes_events.root 
 
 ./bin/MakeHxxTree --mllcut --maxevent=$MAXEVENTB --sample=7 --lumi=300 --xsec=0.4346   data/analysis/14tev/wh_vllljj.root \
 data/delphes/wh_jjllvv/run_14tev/tag_*_delphes_events.root

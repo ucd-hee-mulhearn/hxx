@@ -16,6 +16,7 @@ public:
 private:
    std::vector< std::string > sample_names;
    std::vector< std::vector<double> > evt_counts;
+   std::vector< std::vector<double> > wsq_counts;
 };
 
 #endif

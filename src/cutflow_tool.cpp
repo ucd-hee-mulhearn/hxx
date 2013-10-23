@@ -12,10 +12,19 @@ cutflow_tool::cutflow_tool(){
 }
 
 void cutflow_tool::increment(int stage, int sample, double weight){
-   if (stage >= evt_counts.size()) evt_counts.resize(stage+1);
-   std::vector<double> & x = evt_counts[stage]; 
-   if (sample >= x.size()) x.resize(sample+1,0);
-   x[sample] += weight;
+  if (stage >= evt_counts.size()) {
+    evt_counts.resize(stage+1);
+    wsq_counts.resize(stage+1);
+  }
+   std::vector<double> & x  = evt_counts[stage]; 
+   std::vector<double> & x2 = wsq_counts[stage]; 
+   if (sample >= x.size()){
+     x.resize(sample+1,0);
+     x2.resize(sample+1,0);
+   }
+   x[sample]  += weight;
+   x2[sample] += weight*weight;
+
 }
 
 double cutflow_tool::count(int stage, int sample){
@@ -27,16 +36,18 @@ double cutflow_tool::count(int stage, int sample){
 
 void cutflow_tool::print(int stage){
    if (stage >= evt_counts.size()) return;   
-   std::vector<double> & x = evt_counts[stage]; 
+   std::vector<double> & x  = evt_counts[stage]; 
+   std::vector<double> & x2 = wsq_counts[stage]; 
 
    for (int i=0; i<x.size(); i++){
-      double evts = x[i];
+      double evts  = x[i];
+      double devts = sqrt(x2[i]); 
       if (evts > 0.0) {
          if ((sample_names.size() > i) && (sample_names[i] != ""))
             cout << setw(10) << sample_names[i];
          else 
             cout << "sample " << setw(3) << i;
-         cout << "    events:  " << evts << "\n";
+         cout << "    events:  " << evts << " +/-" << devts << "\n";
       }
    }
 
@@ -44,6 +55,8 @@ void cutflow_tool::print(int stage){
    for (int i=0; i<x.size(); i++){
      if (i < 20) bkg+= x[i];
    }
+   cout << "Total Background:  " << bkg << "\n";
+
    if (bkg <= 0.0) return;
    
    for (int i=0; i<x.size(); i++){

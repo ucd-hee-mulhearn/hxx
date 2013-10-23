@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
    auto_write aw;
 
    cutflow_tool cutflow;
-   histogram_manager h0mll(new TH1F("h0mll","",100,0.0,200.0));
+   histogram_manager h0mll(new TH1F("h0mll","",100,60.0,120.0));
 
    if (pub_plots) {
      h0mll.add_sample(1,  "_z");
@@ -367,7 +367,7 @@ int main(int argc, char *argv[])
    histogram_manager h0j1eta(new TH1F("h0j1eta","", 60, -3.0, 3.0), h0mll, aw);
    histogram_manager h0j2eta(new TH1F("h0j2eta","", 60, -3.0, 3.0), h0mll, aw);
 
-   histogram_manager h1mll   (new TH1F("h1mll",   "",  100, 20.0, 200.0), h0mll, aw);
+   histogram_manager h1mll   (new TH1F("h1mll",   "",  100, 60.0, 120.0), h0mll, aw);
    histogram_manager h1mjj   (new TH1F("h1mjj",   "",  100, 0.0,  500.0), h0mll, aw);
    histogram_manager h1mjl   (new TH1F("h1mjl",   "",  100, 0.0,  500.0), h0mll, aw);
    histogram_manager h1mjjll (new TH1F("h1mjjll", "",  100, 0.0,  1000.0), h0mll, aw);
@@ -533,24 +533,6 @@ int main(int argc, char *argv[])
       //if (mjjll > 200.0)  continue;
 
 
-      if (data.mll < 80)  continue;
-      if (data.mll > 100) continue;
-      if (dphi_zz > 2.0)  continue;
-      if (mjj > 100.0)  continue;      
-      //if (mjl > 70.0)  continue;
-      // These two cuts are applied in MET loop... 0 = no cut
-      double jet_dphi_cut = 0.0; 
-      double zllmet_dphi_cut = 0.0;      
-      //if (mjjll > 250.0)  continue;
-      
-      //if (data.jet_pt->size() > 3) continue
-         // if (data.jet_pt->at(2) > 50.0) continue;
-      //if (mjl > 70.0) continue;
-
-
-
-
-
 
       if (data.jet_pt->size() > 0) {
          h0j1pt  .Fill(data.sample, data.jet_pt ->at(0), data.weight);
@@ -580,12 +562,23 @@ int main(int argc, char *argv[])
       for (int i=0; i<met.size(); i++) {
          h0met        .Fill(data.sample, met[i],          met_weight);
          h0jdphi      .Fill(data.sample, jet_dphi[i],     met_weight);
-         h0dphizllmet .Fill(data.sample, zllmet_dphi[i] , met_weight);
-      
+         h0dphizllmet .Fill(data.sample, zllmet_dphi[i] , met_weight);      
       }
 
 
+      if (data.mll < 80)  continue;
+      if (data.mll > 100) continue;
+      if (dphi_zz > 2.0)  continue;
+      if (mjj > 100.0)  continue;      
+      //if (mjl > 70.0)  continue;
+      // These two cuts are applied in MET loop... 0 = no cut
+      double jet_dphi_cut = 0.0; 
+      double zllmet_dphi_cut = 0.0;      
+      //if (mjjll > 250.0)  continue;
       
+      //if (data.jet_pt->size() > 3) continue
+         // if (data.jet_pt->at(2) > 50.0) continue;
+      //if (mjl > 70.0) continue;
 
 
       cutflow.increment(1, data.sample, data.weight);
